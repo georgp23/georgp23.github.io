@@ -407,7 +407,6 @@
   .leaf {
     cursor: pointer;
     pointer-events: all;
-    transition: filter 0.35s ease;
   }
   .leaf .leaf-body {
     transition: fill 0.3s ease, opacity 0.3s ease;
@@ -416,10 +415,10 @@
     transition: stroke 0.3s ease, opacity 0.3s ease;
     pointer-events: none;
   }
-  .leaf.lit {
-    filter: drop-shadow(0 0 6px rgba(110,255,130,0.9))
-            drop-shadow(0 0 14px rgba(74,255,106,0.55))
-            drop-shadow(0 0 28px rgba(74,255,106,0.25));
+  .leaf-hit-zone {
+    cursor: pointer;
+    fill: transparent;
+    pointer-events: all;
   }
   .leaf.lit .leaf-body {
     fill: var(--leaf-glow) !important;
@@ -1764,8 +1763,11 @@ revEls.forEach(el => obs.observe(el));
 // ─── ARTISTIC TREE - small leaves + radius glow on hover ───────────────────
 (function initArtTree() {
   const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('tree-svg');
   const layer = document.getElementById('leaves-layer');
-  const GLOW_RADIUS = 52;
+  const metContent = document.querySelector('.met-content');
+  const GLOW_RADIUS = 36;
+  const CELL_SIZE = GLOW_RADIUS;
   const SHADES = ['#1a4f24', '#226830', '#2a7a38', '#1e5c2c', '#328f44', '#174020'];
 
   const clusters = [
@@ -1780,6 +1782,14 @@ revEls.forEach(el => obs.observe(el));
   ];
 
   const leafRegistry = [];
+  const clusterPoints = clusters.map(() => []);
+  const hitZones = [];
+  const leafGrid = new Map();
+  let litLeaves = new Set();
+  let activeLeaf = null;
+  let targetGlow = null;
+  let currentGlow = null;
+  let glowFrame = 0;
 
   function leafShape(size) {
     const w = size * 0.42;
@@ -1787,7 +1797,7 @@ revEls.forEach(el => obs.observe(el));
     return `M 0 0 C ${-w} ${-h * 0.55} ${-w * 0.85} ${-h} 0 ${-h} C ${w * 0.85} ${-h} ${w} ${-h * 0.55} 0 0`;
   }
 
-  function addLeaf(x, y, size, rotation, shade) {
+  function addLeaf(x, y, size, rotation, shade, clusterIndex = -1) {
     const g = document.createElementNS(NS, 'g');
     g.classList.add('leaf');
     g.setAttribute('transform', `translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${rotation.toFixed(1)})`);
@@ -1811,9 +1821,94 @@ revEls.forEach(el => obs.observe(el));
     g.appendChild(vein);
     layer.appendChild(g);
     leafRegistry.push({ el: g, x, y });
+    if (clusterIndex >= 0) clusterPoints[clusterIndex].push({ x, y });
   }
 
-  clusters.forEach(c => {
+  function cross(o, a, b) {
+    return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+  }
+
+  function convexHull(points) {
+    if (points.length <= 3) return points;
+    const sorted = [...points].sort((a, b) => a.x === b.x ? a.y - b.y : a.x - b.x);
+    const lower = [];
+    sorted.forEach(p => {
+      while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0) lower.pop();
+      lower.push(p);
+    });
+    const upper = [];
+    for (let i = sorted.length - 1; i >= 0; i--) {
+      const p = sorted[i];
+      while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0) upper.pop();
+      upper.push(p);
+    }
+    return lower.slice(0, -1).concat(upper.slice(0, -1));
+  }
+
+  function inflateHull(hull, cluster, amount = 18) {
+    return hull.map(p => {
+      const dx = p.x - cluster.cx;
+      const dy = p.y - cluster.cy;
+      const len = Math.hypot(dx, dy) || 1;
+      return {
+        x: p.x + (dx / len) * amount,
+        y: p.y + (dy / len) * amount
+      };
+    });
+  }
+
+  function createHitZone(cluster, points) {
+    const hull = inflateHull(convexHull(points), cluster);
+    if (hull.length < 3) return;
+    const polygon = document.createElementNS(NS, 'polygon');
+    polygon.classList.add('leaf-hit-zone');
+    polygon.setAttribute('points', hull.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' '));
+    layer.appendChild(polygon);
+    hitZones.push(hull);
+  }
+
+  function pointInPolygon(point, polygon) {
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const xi = polygon[i].x, yi = polygon[i].y;
+      const xj = polygon[j].x, yj = polygon[j].y;
+      const intersects = ((yi > point.y) !== (yj > point.y)) &&
+        (point.x < (xj - xi) * (point.y - yi) / ((yj - yi) || 1) + xi);
+      if (intersects) inside = !inside;
+    }
+    return inside;
+  }
+
+  function pointInAnyHitZone(point) {
+    return hitZones.some(zone => pointInPolygon(point, zone));
+  }
+
+  function gridKey(gx, gy) {
+    return `${gx},${gy}`;
+  }
+
+  function indexLeaf(leaf) {
+    const gx = Math.floor(leaf.x / CELL_SIZE);
+    const gy = Math.floor(leaf.y / CELL_SIZE);
+    const key = gridKey(gx, gy);
+    if (!leafGrid.has(key)) leafGrid.set(key, []);
+    leafGrid.get(key).push(leaf);
+  }
+
+  function getNearbyLeaves(cx, cy) {
+    const gx = Math.floor(cx / CELL_SIZE);
+    const gy = Math.floor(cy / CELL_SIZE);
+    const nearby = [];
+    for (let y = gy - 1; y <= gy + 1; y++) {
+      for (let x = gx - 1; x <= gx + 1; x++) {
+        const bucket = leafGrid.get(gridKey(x, y));
+        if (bucket) nearby.push(...bucket);
+      }
+    }
+    return nearby;
+  }
+
+  clusters.forEach((c, clusterIndex) => {
     let placed = 0;
     let attempts = 0;
     while (placed < c.n && attempts < c.n * 4) {
@@ -1825,7 +1920,7 @@ revEls.forEach(el => obs.observe(el));
       if (y > 468 || (y > 430 && Math.abs(x - 250) < 35)) continue;
       const size = 4 + Math.random() * 4.5;
       const rot = (Math.random() - 0.5) * 110 + (x < 250 ? -15 : 15);
-      addLeaf(x, y, size, rot, SHADES[Math.floor(Math.random() * SHADES.length)]);
+      addLeaf(x, y, size, rot, SHADES[Math.floor(Math.random() * SHADES.length)], clusterIndex);
       placed++;
     }
   });
@@ -1842,27 +1937,106 @@ revEls.forEach(el => obs.observe(el));
       addLeaf(x, y, 3.5 + Math.random() * 3, Math.random() * 360 - 180, SHADES[i % SHADES.length]);
     }
   });
+  leafRegistry.forEach(indexLeaf);
+  clusters.forEach((cluster, i) => createHitZone(cluster, clusterPoints[i]));
+
+  function svgPointFromEvent(e) {
+    const pt = svg.createSVGPoint();
+    pt.x = e.clientX;
+    pt.y = e.clientY;
+    return pt.matrixTransform(svg.getScreenCTM().inverse());
+  }
 
   function setGlowRadius(cx, cy) {
     const r2 = GLOW_RADIUS * GLOW_RADIUS;
-    leafRegistry.forEach(({ el, x, y }) => {
+    const nextLit = new Set();
+
+    getNearbyLeaves(cx, cy).forEach(({ el, x, y }) => {
       const dx = x - cx, dy = y - cy;
-      el.classList.toggle('lit', dx * dx + dy * dy <= r2);
+      if (dx * dx + dy * dy <= r2) nextLit.add(el);
     });
+
+    litLeaves.forEach(el => {
+      if (!nextLit.has(el)) el.classList.remove('lit');
+    });
+    nextLit.forEach(el => {
+      if (!litLeaves.has(el)) el.classList.add('lit');
+    });
+
+    litLeaves = nextLit;
+  }
+
+  function animateGlow() {
+    if (!targetGlow || !currentGlow) {
+      glowFrame = 0;
+      return;
+    }
+
+    currentGlow.x += (targetGlow.x - currentGlow.x) * 0.16;
+    currentGlow.y += (targetGlow.y - currentGlow.y) * 0.16;
+    setGlowRadius(currentGlow.x, currentGlow.y);
+
+    const dx = targetGlow.x - currentGlow.x;
+    const dy = targetGlow.y - currentGlow.y;
+    if (dx * dx + dy * dy > 0.2) {
+      glowFrame = requestAnimationFrame(animateGlow);
+    } else {
+      currentGlow = { ...targetGlow };
+      setGlowRadius(currentGlow.x, currentGlow.y);
+      glowFrame = 0;
+    }
+  }
+
+  function scheduleGlow(cx, cy) {
+    targetGlow = { x: cx, y: cy };
+    if (!currentGlow) currentGlow = { ...targetGlow };
+    if (glowFrame) return;
+    glowFrame = requestAnimationFrame(animateGlow);
   }
 
   function clearGlow() {
-    leafRegistry.forEach(({ el }) => el.classList.remove('lit'));
+    activeLeaf = null;
+    targetGlow = null;
+    currentGlow = null;
+    if (glowFrame) {
+      cancelAnimationFrame(glowFrame);
+      glowFrame = 0;
+    }
+    litLeaves.forEach(el => el.classList.remove('lit'));
+    litLeaves = new Set();
   }
+
+  layer.addEventListener('pointermove', e => {
+    const zone = e.target.closest('.leaf-hit-zone');
+    if (!zone) return;
+    activeLeaf = null;
+    const pt = svgPointFromEvent(e);
+    scheduleGlow(pt.x, pt.y);
+  });
 
   layer.addEventListener('mouseover', e => {
     const leaf = e.target.closest('.leaf');
     if (!leaf) return;
-    setGlowRadius(+leaf.dataset.x, +leaf.dataset.y);
+    if (leaf === activeLeaf) return;
+    activeLeaf = leaf;
+    scheduleGlow(+leaf.dataset.x, +leaf.dataset.y);
   });
   layer.addEventListener('mouseleave', clearGlow);
 
-  document.getElementById('tree-svg').addEventListener('mouseleave', clearGlow);
+  if (metContent) {
+    metContent.addEventListener('pointermove', e => {
+      const pt = svgPointFromEvent(e);
+      if (pointInAnyHitZone(pt)) {
+        activeLeaf = null;
+        scheduleGlow(pt.x, pt.y);
+      } else {
+        clearGlow();
+      }
+    });
+    metContent.addEventListener('mouseleave', clearGlow);
+  }
+
+  svg.addEventListener('mouseleave', clearGlow);
 })();
 
 // ─── TRACK CANVAS ─────────────────────────────────────────────────────────
@@ -2023,7 +2197,7 @@ for (let i = 0; i < 6; i++) {
   let phase = 'approach';
   let timer = 0;
   let impactDone = false;
-  let vehicleASpeed = speedInput ? Number(speedInput.value) : 5.0;
+  let vehicleASpeed = speedInput ? Number(speedInput.value) : 3.0;
 
   function syncVehicleASpeed() {
     if (speedOutput) speedOutput.value = vehicleASpeed.toFixed(1);
