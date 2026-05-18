@@ -636,6 +636,34 @@
   }
   .collision-legend .lg-a::before { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
   .collision-legend .lg-b::before { background: var(--racing-yellow); box-shadow: 0 0 6px var(--racing-yellow); }
+  .collision-controls {
+    position: absolute;
+    left: 1.25rem;
+    bottom: 1rem;
+    z-index: 3;
+    width: min(240px, calc(100% - 2.5rem));
+    padding: 0.75rem 0.85rem;
+    border: 1px solid rgba(0,255,200,0.14);
+    background: rgba(8,12,16,0.78);
+    backdrop-filter: blur(8px);
+    pointer-events: auto;
+  }
+  .collision-control-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.55rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    color: var(--cyan);
+    text-transform: uppercase;
+  }
+  .collision-control-label output { color: var(--muted); }
+  .collision-speed {
+    width: 100%;
+    accent-color: var(--cyan);
+  }
 
   .caffeine-wrap {
     position: relative;
@@ -1300,6 +1328,13 @@
   <div class="collision-wrap reveal">
     <div class="collision-caption">// Impact Simulation · Top-Down View</div>
     <canvas id="collision-canvas"></canvas>
+    <div class="collision-controls" aria-label="Collision simulation controls">
+      <label class="collision-control-label" for="vehicle-a-speed">
+        Vehicle A Speed
+        <output id="vehicle-a-speed-value" for="vehicle-a-speed">8.5</output>
+      </label>
+      <input class="collision-speed" id="vehicle-a-speed" type="range" min="1.5" max="15.5" step="0.1" value="8.5">
+    </div>
     <div class="collision-legend">
       <span class="lg-a">Vehicle A</span>
       <span class="lg-b">Vehicle B</span>
@@ -1966,6 +2001,8 @@ for (let i = 0; i < 6; i++) {
   const canvas = document.getElementById('collision-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  const speedInput = document.getElementById('vehicle-a-speed');
+  const speedOutput = document.getElementById('vehicle-a-speed-value');
   let CW = 0, CH = 0;
 
   function resizeCollision() {
@@ -1986,10 +2023,23 @@ for (let i = 0; i < 6; i++) {
   let phase = 'approach';
   let timer = 0;
   let impactDone = false;
+  let vehicleASpeed = speedInput ? Number(speedInput.value) : 5.0;
+
+  function syncVehicleASpeed() {
+    if (speedOutput) speedOutput.value = vehicleASpeed.toFixed(1);
+    if (cars[0] && phase === 'approach') cars[0].vx = vehicleASpeed;
+  }
+
+  if (speedInput) {
+    speedInput.addEventListener('input', () => {
+      vehicleASpeed = Number(speedInput.value);
+      syncVehicleASpeed();
+    });
+  }
 
   function reset() {
     cars = [
-      { x: 60, y: CH/2 - 5, vx: 3.0, vy: 0, a: 0, w: 0, color: '#00ffc8', accent: '#0a4035' },
+      { x: 60, y: CH/2 - 5, vx: vehicleASpeed, vy: 0, a: 0, w: 0, color: '#00ffc8', accent: '#0a4035' },
       { x: CW * 0.62, y: CH/2 + 5, vx: 0, vy: 0, a: 0, w: 0, color: '#ffe033', accent: '#4a3a05' }
     ];
     sparks = [];
@@ -1997,6 +2047,7 @@ for (let i = 0; i < 6; i++) {
     phase = 'approach';
     timer = 0;
     impactDone = false;
+    syncVehicleASpeed();
   }
 
   function drawRoad() {
