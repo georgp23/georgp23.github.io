@@ -17,7 +17,7 @@
 <meta property="og:url" content="https://georgp23.github.io/">
 <meta name="twitter:card" content="summary_large_image">
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23080c10'/%3E%3Ctext x='50%25' y='52%25' text-anchor='middle' font-family='monospace' font-size='34' font-weight='700' fill='%2300ffc8'%3EGP%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23080c10'/%3E%3Crect x='5' y='5' width='54' height='54' rx='10' fill='%230d1117' stroke='%2300ffc8' stroke-width='3'/%3E%3Ctext x='32' y='34' text-anchor='middle' dominant-baseline='middle' font-family='Courier New, monospace' font-size='39' font-weight='400' letter-spacing='-5' fill='%2300ffc8'%3EGP%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -2143,8 +2143,8 @@ revEls.forEach(el => obs.observe(el));
       return;
     }
 
-    currentGlow.x += (targetGlow.x - currentGlow.x) * 0.085;
-    currentGlow.y += (targetGlow.y - currentGlow.y) * 0.085;
+    currentGlow.x += (targetGlow.x - currentGlow.x) * 0.1;
+    currentGlow.y += (targetGlow.y - currentGlow.y) * 0.1;
     addTrailPoint(currentGlow.x, currentGlow.y);
     glowTrail.forEach(p => { p.age += 0.035; });
     glowTrail = glowTrail.filter(p => p.age < 1);
@@ -2224,8 +2224,6 @@ revEls.forEach(el => obs.observe(el));
   const ctx = canvas.getContext('2d');
   const metOffice = document.getElementById('met-office');
   const treeContainer = document.querySelector('.tree-container');
-  const metBadge = document.querySelector('.met-badge');
-  const rainControls = document.querySelector('.rain-controls');
   const rainInput = document.getElementById('raininess');
   const rainOutput = document.getElementById('raininess-value');
   const windInput = document.getElementById('windiness');
@@ -2236,7 +2234,8 @@ revEls.forEach(el => obs.observe(el));
   let raininess = rainInput ? Number(rainInput.value) : 60;
   let windiness = windInput ? Number(windInput.value) : 60;
   let sunniness = sunInput ? Number(sunInput.value) : 0;
-  let sunIntroPlayed = false;
+  let manualSunOverride = false;
+  let sunScrollFrame = 0;
   let rainWind = 1;
   let currentWindStrength = windiness / 60;
   let targetWindStrength = currentWindStrength;
@@ -2283,50 +2282,6 @@ revEls.forEach(el => obs.observe(el));
         return { canopy: c, nx, ny };
       }
     }
-    return null;
-  }
-
-  function getElementRainBoxes() {
-    const canvasRect = canvas.getBoundingClientRect();
-    return [metBadge, rainControls]
-      .filter(Boolean)
-      .map(el => {
-        const r = el.getBoundingClientRect();
-        return {
-          left: r.left - canvasRect.left,
-          right: r.right - canvasRect.left,
-          top: r.top - canvasRect.top,
-          bottom: r.bottom - canvasRect.top,
-        };
-      })
-      .filter(box => (
-        box.right > 0 &&
-        box.left < W &&
-        box.bottom > 0 &&
-        box.top < H
-      ));
-  }
-
-  function boxRainHit(prevX, prevY, d, boxes) {
-    for (const box of boxes) {
-      const crossedTop = prevY <= box.top && d.y >= box.top;
-      if (!crossedTop) continue;
-
-      const t = (box.top - prevY) / Math.max(d.y - prevY, 0.001);
-      const xAtTop = prevX + (d.x - prevX) * t;
-      const edgePad = 5;
-      if (xAtTop >= box.left - edgePad && xAtTop <= box.right + edgePad) {
-        const center = (box.left + box.right) / 2;
-        const halfWidth = Math.max((box.right - box.left) / 2, 1);
-        return {
-          x: xAtTop,
-          y: box.top,
-          nx: Math.max(-1, Math.min(1, (xAtTop - center) / halfWidth)),
-          ny: -1,
-        };
-      }
-    }
-
     return null;
   }
 
@@ -2414,24 +2369,37 @@ revEls.forEach(el => obs.observe(el));
   }
 
   if (sunInput) {
-    sunInput.addEventListener('input', () => setSunniness(sunInput.value));
+    sunInput.addEventListener('input', () => {
+      manualSunOverride = true;
+      setSunniness(sunInput.value);
+    });
   }
 
-  function animateSunIntro() {
-    if (sunIntroPlayed) return;
-    sunIntroPlayed = true;
-    const duration = 3000;
-    const target = 55;
-    const start = performance.now();
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
 
-    function step(now) {
-      const t = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - t, 3);
-      setSunniness(Math.round(target * eased), true);
-      if (t < 1) requestAnimationFrame(step);
-    }
+  function getSectionSunProgress() {
+    if (!metOffice) return 0;
+    const minSun = 25;
+    const maxSun = 75;
+    const rect = metOffice.getBoundingClientRect();
+    const viewportH = window.innerHeight || document.documentElement.clientHeight;
+    const viewportMid = viewportH / 2;
+    const progress = clamp((viewportMid - rect.top) / Math.max(rect.height, 1), 0, 1);
+    const midpointPeak = 1 - Math.abs(progress - 0.5) * 2;
+    return (minSun + midpointPeak * (maxSun - minSun)) / 100;
+  }
 
-    requestAnimationFrame(step);
+  function updateSunFromScroll() {
+    sunScrollFrame = 0;
+    if (manualSunOverride) return;
+    setSunniness(Math.round(getSectionSunProgress() * 100), true);
+  }
+
+  function scheduleSunScrollUpdate() {
+    if (manualSunOverride || sunScrollFrame) return;
+    sunScrollFrame = requestAnimationFrame(updateSunFromScroll);
   }
 
   function spawnSplash(x, y, hit) {
@@ -2456,19 +2424,12 @@ revEls.forEach(el => obs.observe(el));
   }
 
   function updateRain() {
-    const elementBoxes = getElementRainBoxes();
     rain.forEach(d => {
-      const prevX = d.x;
-      const prevY = d.y;
       d.x += d.vx;
       d.y += d.vy;
       const p = toSvgPoint(d.x, d.y);
       const hit = canopyHit(p.x, p.y);
-      const boxHit = d.vy > 0 ? boxRainHit(prevX, prevY, d, elementBoxes) : null;
-      if (boxHit) {
-        spawnSplash(boxHit.x, boxHit.y, boxHit);
-        resetDrop(d);
-      } else if (hit && d.vy > 0) {
+      if (hit && d.vy > 0) {
         spawnSplash(d.x, d.y, hit);
         resetDrop(d);
       } else if (d.y > H + 60 || d.x < -80) {
@@ -2534,18 +2495,12 @@ revEls.forEach(el => obs.observe(el));
   setWindiness(windiness);
   setSunniness(0, true);
   setRaininess(raininess);
-  if (metOffice) {
-    const sunIntroObs = new IntersectionObserver(entries => {
-      if (entries.some(e => e.isIntersecting)) {
-        animateSunIntro();
-        sunIntroObs.disconnect();
-      }
-    }, { threshold: 0.28 });
-    sunIntroObs.observe(metOffice);
-  }
+  updateSunFromScroll();
+  window.addEventListener('scroll', scheduleSunScrollUpdate, { passive: true });
   window.addEventListener('resize', () => {
     resizeRain();
     setRaininess(raininess);
+    scheduleSunScrollUpdate();
   });
   loop();
 })();
