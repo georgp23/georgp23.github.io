@@ -973,11 +973,60 @@
 
   /* ─── CERTIFICATIONS ────────────────────────────────────────────────── */
   #certifications {
+    position: relative;
+    overflow: hidden;
     background:
-      radial-gradient(ellipse 55% 65% at 15% 30%, rgba(0,255,200,0.06), transparent 60%),
+      radial-gradient(ellipse 55% 65% at 15% 30%, rgba(0,255,200,0.04), transparent 60%),
       var(--bg);
   }
+  .cert-sky-bg {
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: min(460px, 68%);
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 42% 55% at 78% 14%, rgba(0,255,200,0.09), transparent 68%),
+      radial-gradient(ellipse 60% 70% at 24% 8%, rgba(0,255,200,0.045), transparent 66%),
+      linear-gradient(180deg, rgba(0,255,200,0.045), rgba(0,255,200,0));
+  }
+  .cert-sky-bg.reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .cert-sky-bg.reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+  .cert-sky-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 72%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,255,200,0.16), transparent);
+  }
+  .cert-bg-star {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--s, 2px);
+    height: var(--s, 2px);
+    border-radius: 50%;
+    background: var(--star-color, #ffffff);
+    box-shadow: 0 0 12px rgba(0,255,200,0.28);
+    opacity: 0;
+  }
+  .cert-sky-bg.visible .cert-bg-star {
+    animation: certStarAppear 0.85s ease-out forwards;
+    animation-delay: var(--star-d, 0s);
+  }
   .cert-header {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(240px, 360px);
     gap: 3rem;
@@ -1003,11 +1052,6 @@
   }
   .cert-telescope.visible .cert-barrel-spin { transform: rotate(-62deg); }
 
-  .cert-stars .star { opacity: 0; }
-  .cert-telescope.visible .cert-stars .star {
-    animation: certStarAppear 0.85s ease-out forwards;
-    animation-delay: var(--star-d, 0s);
-  }
   @keyframes certStarAppear {
     0%   { opacity: 0; }
     60%  { opacity: 1; }
@@ -1026,11 +1070,13 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .cert-barrel-spin { transition: none; transform: rotate(-62deg); }
-    .cert-stars .star { opacity: 1; animation: none; }
+    .cert-bg-star { opacity: var(--star-final, 0.95); animation: none; }
     .cert-lens-glow { opacity: 1; transition: none; }
   }
 
   .cert-grid {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1rem;
@@ -1752,6 +1798,22 @@
 
 <!-- ═══ CERTIFICATIONS ═══════════════════════════════════════════════════ -->
 <section id="certifications">
+  <div class="cert-sky-bg reveal" aria-hidden="true">
+    <span class="cert-bg-star" style="--x:9%; --y:18%; --s:3px; --star-d:0.55s; --star-final:1;"></span>
+    <span class="cert-bg-star" style="--x:16%; --y:9%; --s:2px; --star-d:0.70s; --star-final:0.85;"></span>
+    <span class="cert-bg-star" style="--x:24%; --y:24%; --s:2.4px; --star-d:0.85s; --star-final:0.95; --star-color:#9beae0;"></span>
+    <span class="cert-bg-star" style="--x:33%; --y:13%; --s:3.4px; --star-d:1.00s; --star-final:1;"></span>
+    <span class="cert-bg-star" style="--x:44%; --y:22%; --s:2.4px; --star-d:1.10s; --star-final:0.9;"></span>
+    <span class="cert-bg-star" style="--x:55%; --y:10%; --s:2.8px; --star-d:1.20s; --star-final:1; --star-color:#9beae0;"></span>
+    <span class="cert-bg-star" style="--x:66%; --y:19%; --s:2.2px; --star-d:1.30s; --star-final:0.85;"></span>
+    <span class="cert-bg-star" style="--x:78%; --y:29%; --s:2.6px; --star-d:1.45s; --star-final:0.95;"></span>
+    <span class="cert-bg-star" style="--x:88%; --y:14%; --s:2px; --star-d:0.65s; --star-final:0.7; --star-color:#9beae0;"></span>
+    <span class="cert-bg-star" style="--x:12%; --y:45%; --s:1.8px; --star-d:0.80s; --star-final:0.85;"></span>
+    <span class="cert-bg-star" style="--x:36%; --y:50%; --s:2px; --star-d:0.95s; --star-final:0.8;"></span>
+    <span class="cert-bg-star" style="--x:61%; --y:55%; --s:2.2px; --star-d:1.05s; --star-final:0.9; --star-color:#9beae0;"></span>
+    <span class="cert-bg-star" style="--x:82%; --y:48%; --s:1.8px; --star-d:1.25s; --star-final:0.75;"></span>
+    <span class="cert-sky-line"></span>
+  </div>
   <div class="cert-header">
     <div class="cert-header-text">
       <div class="section-label reveal">// 07 · Certifications</div>
@@ -1766,10 +1828,6 @@
     <div class="cert-telescope reveal" aria-hidden="true">
       <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="cert-sky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stop-color="rgba(0,255,200,0.07)"/>
-            <stop offset="100%" stop-color="rgba(0,255,200,0)"/>
-          </linearGradient>
           <radialGradient id="cert-lens" cx="50%" cy="50%" r="50%">
             <stop offset="0%"   stop-color="#d8fff4"/>
             <stop offset="55%"  stop-color="#8fe9d8"/>
@@ -1780,27 +1838,6 @@
             <stop offset="100%" stop-color="rgba(0,255,200,0)"/>
           </radialGradient>
         </defs>
-
-        <rect x="0" y="0" width="320" height="195" fill="url(#cert-sky)"/>
-
-        <g class="cert-stars" fill="#ffffff">
-          <circle class="star" style="--star-d:0.55s; --star-final:1"   cx="38"  cy="48"  r="1.5"/>
-          <circle class="star" style="--star-d:0.70s; --star-final:0.85" cx="72"  cy="28"  r="1.0"/>
-          <circle class="star" style="--star-d:0.85s; --star-final:0.95" cx="108" cy="62"  r="1.2" fill="#9beae0"/>
-          <circle class="star" style="--star-d:1.00s; --star-final:1"   cx="148" cy="36"  r="1.7"/>
-          <circle class="star" style="--star-d:1.10s; --star-final:0.9" cx="186" cy="58"  r="1.2"/>
-          <circle class="star" style="--star-d:1.20s; --star-final:1"   cx="222" cy="32"  r="1.4" fill="#9beae0"/>
-          <circle class="star" style="--star-d:1.30s; --star-final:0.85" cx="262" cy="50"  r="1.1"/>
-          <circle class="star" style="--star-d:1.45s; --star-final:0.95" cx="294" cy="78"  r="1.3"/>
-          <circle class="star" style="--star-d:0.65s; --star-final:0.7" cx="56"  cy="98"  r="0.9" fill="#9beae0"/>
-          <circle class="star" style="--star-d:0.80s; --star-final:0.85" cx="124" cy="108" r="1.0"/>
-          <circle class="star" style="--star-d:0.95s; --star-final:0.8" cx="196" cy="118" r="0.9"/>
-          <circle class="star" style="--star-d:1.05s; --star-final:0.9" cx="242" cy="132" r="1.1" fill="#9beae0"/>
-          <circle class="star" style="--star-d:1.25s; --star-final:0.75" cx="174" cy="150" r="0.8"/>
-          <circle class="star" style="--star-d:1.40s; --star-final:0.85" cx="92"  cy="138" r="0.9"/>
-        </g>
-
-        <line x1="0" y1="195" x2="320" y2="195" stroke="rgba(0,255,200,0.18)" stroke-width="0.5"/>
 
         <g stroke="#4d6776" stroke-width="2" stroke-linecap="round">
           <line x1="170" y1="165" x2="142" y2="212"/>
