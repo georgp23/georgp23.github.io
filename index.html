@@ -601,7 +601,7 @@
   }
   /* checkered flag accent */
   .checkered {
-    width: 120px; height: 12px;
+    width: 80%; height: 12px;
     background-image: repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%);
     background-size: 12px 12px;
     opacity: 0.15;
@@ -2261,6 +2261,8 @@ revEls.forEach(el => obs.observe(el));
   const ctx = canvas.getContext('2d');
   const metOffice = document.getElementById('met-office');
   const treeContainer = document.querySelector('.tree-container');
+  const metBadge = document.querySelector('.met-badge');
+  const rainControls = document.querySelector('.rain-controls');
   const rainInput = document.getElementById('raininess');
   const rainOutput = document.getElementById('raininess-value');
   const windInput = document.getElementById('windiness');
@@ -2319,6 +2321,51 @@ revEls.forEach(el => obs.observe(el));
         return { canopy: c, nx, ny };
       }
     }
+    return null;
+  }
+
+  function getElementRainBoxes() {
+    const canvasRect = canvas.getBoundingClientRect();
+    return [metBadge, rainControls]
+      .filter(Boolean)
+      .map(el => {
+        const rect = el.getBoundingClientRect();
+        return {
+          left: rect.left - canvasRect.left,
+          right: rect.right - canvasRect.left,
+          top: rect.top - canvasRect.top,
+          bottom: rect.bottom - canvasRect.top,
+        };
+      })
+      .filter(box => (
+        box.right > 0 &&
+        box.left < W &&
+        box.bottom > 0 &&
+        box.top < H
+      ));
+  }
+
+  function boxRainHit(prevX, prevY, d, boxes) {
+    for (const box of boxes) {
+      const crossesTop = prevY <= box.top && d.y >= box.top;
+      if (!crossesTop) continue;
+
+      const t = (box.top - prevY) / Math.max(d.y - prevY, 0.001);
+      const xAtTop = prevX + (d.x - prevX) * t;
+      const edgePad = 5;
+
+      if (xAtTop >= box.left - edgePad && xAtTop <= box.right + edgePad) {
+        const center = (box.left + box.right) / 2;
+        const halfWidth = Math.max((box.right - box.left) / 2, 1);
+        return {
+          x: xAtTop,
+          y: box.top,
+          nx: clamp((xAtTop - center) / halfWidth, -1, 1),
+          ny: -1,
+        };
+      }
+    }
+
     return null;
   }
 
@@ -2461,12 +2508,19 @@ revEls.forEach(el => obs.observe(el));
   }
 
   function updateRain() {
+    const elementBoxes = getElementRainBoxes();
     rain.forEach(d => {
+      const prevX = d.x;
+      const prevY = d.y;
       d.x += d.vx;
       d.y += d.vy;
       const p = toSvgPoint(d.x, d.y);
       const hit = canopyHit(p.x, p.y);
-      if (hit && d.vy > 0) {
+      const boxHit = d.vy > 0 ? boxRainHit(prevX, prevY, d, elementBoxes) : null;
+      if (boxHit) {
+        spawnSplash(boxHit.x, boxHit.y, boxHit);
+        resetDrop(d);
+      } else if (hit && d.vy > 0) {
         spawnSplash(d.x, d.y, hit);
         resetDrop(d);
       } else if (d.y > H + 60 || d.x < -80) {
