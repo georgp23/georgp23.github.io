@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>Sheffield Collisions Folium Map</title>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_2327147b5ea6c7140c8ee7d25fb4419a {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_2327147b5ea6c7140c8ee7d25fb4419a" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_2327147b5ea6c7140c8ee7d25fb4419a = L.map(
+                "map_2327147b5ea6c7140c8ee7d25fb4419a",
+                {
+                    center: [53.39291904578595, -1.4622393645027272],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 10,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_d1dbd604c9dc32dbe708a57b936a1b80 = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_d1dbd604c9dc32dbe708a57b936a1b80.addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_e0be13189c88afbcb8568e2d46b9cabe = L.polygon(
+                [[52.94100811099435, -1.4519216848898147], [53.34286233005137, -2.896793720947935], [53.37207405789614, -2.908980828738878], [54.224035536311675, -2.877903565262287], [58.71939502839339, -1.5129462859440677], [58.15301786484402, -1.384611138290171], [57.60094778791994, -1.2780087479359277], [53.40443424236163, -0.5529420647475751], [52.94312812179257, -1.4438591515613333]],
+                {"bubblingMouseEvents": true, "color": "#d8eff6", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#d8eff6", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_02d35c99c430042803b772bb773ad24f = L.polygon(
+                [[53.38816090386505, -1.4505132593663246], [53.38991358237872, -1.4524454304002696], [53.39068601280481, -1.4523152291169368], [53.392599158773876, -1.4480952635778028], [53.39018936112714, -1.4479159089146185]],
+                {"bubblingMouseEvents": true, "color": "#f57245", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f57245", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_c9befa337ed29a50330ada4c9b6365c3 = L.polygon(
+                [[53.414396739123696, -1.4991167326852344], [53.4132307949422, -1.4997322076248842], [53.41314280163536, -1.5001845762149577], [53.412704687688034, -1.5028977012731173], [53.41584554325408, -1.501657454188741], [53.41683047627623, -1.5007431943615472], [53.41673996569442, -1.5005937956795994]],
+                {"bubblingMouseEvents": true, "color": "#fff0a8", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fff0a8", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_96450d4c33e7990146de69231e5c514e = L.polygon(
+                [[53.37961987880276, -1.501328630832695], [53.37959935404682, -1.4943085864265009], [53.37528026901228, -1.4953668132779427], [53.37411877044911, -1.4970339231150211], [53.376840412381306, -1.5030145756900612], [53.37737908207437, -1.5028579882558153], [53.3795306237828, -1.5014800000392565]],
+                {"bubblingMouseEvents": true, "color": "#eaf7e6", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#eaf7e6", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_0c621855a8c97cf5e0acdf6812439ac2 = L.polygon(
+                [[53.38305774700014, -1.4649063099581723], [53.383863314435075, -1.46414450210841], [53.3830530282916, -1.4638539913648538], [53.382965169833554, -1.4643061126290264], [53.38296584393258, -1.464456443540087]],
+                {"bubblingMouseEvents": true, "color": "#fee294", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fee294", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_b82e13f9c32077c2137ede2667bab4fb = L.polygon(
+                [[53.386701685145006, -1.4758363725892742], [53.38608172818788, -1.477948887280754], [53.38608238513515, -1.4780992295006725], [53.38662889148098, -1.4797464229488655], [53.3867194282367, -1.4798956722086012], [53.38916320053188, -1.4837752883925983], [53.39430781911848, -1.488675582879793], [53.39484839839959, -1.4889698690727917], [53.39493828047047, -1.4889687929301074], [53.39637188587107, -1.4878989227102528], [53.392322034990784, -1.4784439858332958], [53.38876434804871, -1.4747585296270784], [53.38768774672084, -1.4752228426332028]],
+                {"bubblingMouseEvents": true, "color": "#94c7df", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#94c7df", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_c7f65a037af9face1b1120f0ffb04d30 = L.polygon(
+                [[53.33257200999447, -1.5141904839080018], [53.33751925589591, -1.515035371140172], [53.338383012738106, -1.506465191299087], [53.33477710613796, -1.5039539117769172], [53.33388636847518, -1.5059164044871762]],
+                {"bubblingMouseEvents": true, "color": "#a3d3e6", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#a3d3e6", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_833153d2fd02bb99253f445d6e747374 = L.polygon(
+                [[53.467487386081395, -1.559500437955297], [53.466877098153574, -1.5953729423791392], [53.47439345237146, -1.606736699972676], [53.48493178563358, -1.6134207497776485], [53.48511155010454, -1.6134191165429235], [53.48654820351781, -1.6129539498905143], [53.48694180281866, -1.5960713067279824], [53.48304302874926, -1.5609970258301928], [53.482680733938736, -1.5602473085090205]],
+                {"bubblingMouseEvents": true, "color": "#9dcee3", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#9dcee3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_edbc5f95821f543a717175c21c569d8a = L.polygon(
+                [[53.35804681483531, -1.4404279630816184], [53.3512528241652, -1.4484789781228393], [53.35513848806875, -1.4529360873591304], [53.35910291993999, -1.4549889171001873], [53.361534532524885, -1.4560097530932383], [53.36315377871154, -1.4562896785453259], [53.36629828190025, -1.4559491022058573], [53.36338481762425, -1.447871589721073], [53.36102065113266, -1.4420419079612843]],
+                {"bubblingMouseEvents": true, "color": "#85bbd9", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#85bbd9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_e0805edc202e164e16476182e8f8c234 = L.polygon(
+                [[53.41294780967661, -1.4174420433671517], [53.40925807467023, -1.4165447102768856], [53.40937813203551, -1.422755943340198], [53.40955862042757, -1.4229039343487424], [53.41118228260407, -1.424085480255939], [53.41172011712425, -1.4237773362609694], [53.41305742542831, -1.421502582704265]],
+                {"bubblingMouseEvents": true, "color": "#e75337", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#e75337", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_98a33365e69592f18265ed4d6524de50 = L.polygon(
+                [[53.37901036498358, -1.4643557218050076], [53.37828861143751, -1.463763482645635], [53.37819872947584, -1.4637646112078724], [53.377385522624785, -1.4648270595949604], [53.37793447614825, -1.4649705023251558], [53.37856230296627, -1.4646619892781176]],
+                {"bubblingMouseEvents": true, "color": "#fdb567", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fdb567", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_73570035ac718e929a8277d2dbda7680 = L.polygon(
+                [[53.380778641873206, -1.503299474533209], [53.37882781087615, -1.5053966415162128], [53.38063539659454, -1.5077810008280705], [53.38225699560869, -1.5086643290865662], [53.38549585556946, -1.5093787996239476], [53.387199295558425, -1.5083067474720673], [53.3870151942665, -1.5072563942387065], [53.3833194445771, -1.5047432558467049]],
+                {"bubblingMouseEvents": true, "color": "#fdc778", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fdc778", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_5ac67443c7740b6592a43e59848607be = L.polygon(
+                [[53.38187103104672, -1.4608621216586841], [53.38295246154321, -1.46147989263166], [53.384299197652766, -1.4611321502778483], [53.38384027526123, -1.4590331473261744], [53.38348006709562, -1.4588873697079727], [53.38303065802661, -1.4588930648690592], [53.38267181165301, -1.459047950629676], [53.38196609839964, -1.460019040467014]],
+                {"bubblingMouseEvents": true, "color": "#fed889", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fed889", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_3a877052abde246b816577e2ea788952 = L.polygon(
+                [[53.327415232183924, -1.338880493997154], [53.32278994728692, -1.3461281120408122], [53.32282764487457, -1.3597141890159103], [53.322875242191486, -1.3635717884110903], [53.32360388328813, -1.3653625275980081], [53.32828806640836, -1.3672449647324003], [53.346886264555415, -1.3656178199901956], [53.35530539200324, -1.359933878466922], [53.34969559919234, -1.3367332829115366], [53.34051610345034, -1.3347729982462282]],
+                {"bubblingMouseEvents": true, "color": "#dcf1f7", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#dcf1f7", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_d91917267056ffb5d8da03b27a417bc5 = L.polygon(
+                [[53.412480949843335, -1.4517495720262346], [53.40842799594919, -1.4499965100436876], [53.407350112572125, -1.450160831982798], [53.406376600445604, -1.4534826623396528], [53.40646716976314, -1.4536319244260762], [53.40725051309061, -1.4539227423022643], [53.4072774775034, -1.4539223971525397]],
+                {"bubblingMouseEvents": true, "color": "#fdfec2", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fdfec2", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_0efe6bf582f4ddaf0f582ea4fb8e841b = L.polygon(
+                [[53.36547188812553, -1.5371095068075817], [53.362269550270696, -1.5458596215695346], [53.3730470888584, -1.5676894179834078], [53.37889981129149, -1.5704863447951034], [53.3839313972708, -1.5649482522723464], [53.38271370530032, -1.5564665680549008]],
+                {"bubblingMouseEvents": true, "color": "#87bdd9", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#87bdd9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_85d11e5e1b5d3a829f7a57f4b0b89105 = L.polygon(
+                [[53.44892931012467, -1.46151947911579], [53.44116953195528, -1.4549935784820787], [53.438398960199116, -1.4584913192033702], [53.43723867742453, -1.4603124338033524], [53.43769012075324, -1.4607583140149678], [53.44165166700062, -1.4622136436653002], [53.445521285156914, -1.463218718254646]],
+                {"bubblingMouseEvents": true, "color": "#a1d1e5", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#a1d1e5", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_7ac0bc01bae3f6ff3fcf4e463399a6b6 = L.polygon(
+                [[53.45854858867969, -1.4618496626934325], [53.455140565398594, -1.4635492647670352], [53.4556872722688, -1.4651989351982357], [53.462072696798586, -1.4700289007174911], [53.46415752993321, -1.469912572731001], [53.46548292405369, -1.4647746240300104]],
+                {"bubblingMouseEvents": true, "color": "#e2f4f4", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#e2f4f4", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_1d59bd8a72d5f15bc12498892720c938 = L.polygon(
+                [[53.369377992005205, -1.3866103153465643], [53.368793352145076, -1.3953505599597242], [53.369061075200634, -1.3967444761232743], [53.376188605102364, -1.4002062924908352], [53.379595009455514, -1.3983545121395078], [53.381647848216254, -1.3954692181606851], [53.37223101308448, -1.3820753104812675], [53.37159005903255, -1.381543503028139]],
+                {"bubblingMouseEvents": true, "color": "#81b7d7", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#81b7d7", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_c6accb6699c0c182e07ce0bb68674ae8 = L.polygon(
+                [[53.372292449394266, -1.4902918554271074], [53.371652986166815, -1.4878946955693], [53.369776381994185, -1.490472167522021], [53.36863023277312, -1.4957459410255012], [53.368366920460254, -1.4972519262194124], [53.36836755295805, -1.497402206517493], [53.36872834775152, -1.4976985401983343], [53.368818230339436, -1.4976974834510381], [53.37113804178493, -1.4936121749155615]],
+                {"bubblingMouseEvents": true, "color": "#feca7c", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#feca7c", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_89ada5ff4d9e76e48f090f1d5431a176 = L.polygon(
+                [[53.40479256279307, -1.5023882223876477], [53.404322377630386, -1.497430030459509], [53.401306132258114, -1.4983679769390739], [53.400913805842464, -1.4991246007435095], [53.400829590510206, -1.500479207996275], [53.4009444728421, -1.506493961978858], [53.40193379832606, -1.5066329264472977], [53.40463696722228, -1.5038791503988131]],
+                {"bubblingMouseEvents": true, "color": "#ecf8e2", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ecf8e2", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_2ed8bcd65f0028d3303a2f50f026c5f1 = L.polygon(
+                [[53.42281383113899, -1.450864315975943], [53.41950339436123, -1.454217250343544], [53.41950682808224, -1.4549695479009916], [53.41960013828162, -1.4557206983918571], [53.42185059278324, -1.456444354968072], [53.429047920414426, -1.4578576044359752]],
+                {"bubblingMouseEvents": true, "color": "#fafdc9", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fafdc9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_6a1ac083d296497b321b06e89ea520c5 = L.polygon(
+                [[53.37262031602415, -1.4429425232089825], [53.370370466928634, -1.4423706812193178], [53.36992105810886, -1.4423765474961314], [53.36957552677674, -1.4453869050037738], [53.37183162920153, -1.4473115169762645], [53.3738982149074, -1.4471344693143653], [53.37353102335586, -1.4454858530583707]],
+                {"bubblingMouseEvents": true, "color": "#a1d1e5", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#a1d1e5", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_80e536bdea6d045d2c3d9d33c14401f2 = L.polygon(
+                [[53.450649765245515, -1.4446329525979598], [53.456191951134635, -1.4575121040044683], [53.461814467851475, -1.448704631597905], [53.45683537795944, -1.441088477598039]],
+                {"bubblingMouseEvents": true, "color": "#fdfec2", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fdfec2", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_943eaf6680993551df2f28bea839eb0c = L.polygon(
+                [[53.373241024995394, -1.4809616283450457], [53.369831367008274, -1.4823556915742975], [53.369832018271055, -1.4825059766782684], [53.370157287174635, -1.4828928013401654], [53.3721767602139, -1.4842811871770316], [53.37289452064593, -1.483971914159061], [53.37310419107581, -1.4825715493439642]],
+                {"bubblingMouseEvents": true, "color": "#9dcee3", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#9dcee3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_18e4048e94724b5a3e14f7dcfe0d245d = L.polygon(
+                [[53.365216861968996, -1.4359760298586615], [53.36530603390845, -1.435824575319586], [53.3651141749667, -1.433272404242517], [53.36277082522906, -1.4319510678402112], [53.362777963248824, -1.4334536581987674]],
+                {"bubblingMouseEvents": true, "color": "#ecf8e2", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ecf8e2", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_79322a08e7a27f13fe69509a3997aa02 = L.polygon(
+                [[53.37158627320525, -1.4725649784020443], [53.37095377705655, -1.471821302521153], [53.37059491281254, -1.4719760352188709], [53.37050635909378, -1.4722777206367912], [53.371228071431275, -1.4728699969713979], [53.37149705461497, -1.47271637889138]],
+                {"bubblingMouseEvents": true, "color": "#b9e0ed", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#b9e0ed", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_4a49476e4c640697eab3ba0b3252a7b3 = L.polygon(
+                [[53.375304561871346, -1.4519262651151055], [53.37365487058663, -1.4528492728922928], [53.37374544089998, -1.4529984196967558], [53.37879597621649, -1.4566918506570414], [53.38149721309969, -1.4577098224761955], [53.38158709492194, -1.457708681028109], [53.380677332949716, -1.4553149324011696], [53.378512618058906, -1.453688980544427]],
+                {"bubblingMouseEvents": true, "color": "#c5e6f0", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#c5e6f0", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_f6ee21a87fd8764a83c7226c32d07857 = L.polygon(
+                [[53.341083458585864, -1.4268322672617446], [53.34239844584625, -1.4311403122047102], [53.34648932367613, -1.429463603316667], [53.3499846496174, -1.4273138264345804], [53.353029801788004, -1.425019515076393], [53.34371398570303, -1.4224411624438817], [53.34202377065706, -1.4223738738227953]],
+                {"bubblingMouseEvents": true, "color": "#a3d3e6", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#a3d3e6", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_1b06d913959279e8d3f7eb270bc0d5c6 = L.polygon(
+                [[53.464008946436984, -1.476993820673317], [53.45608404161596, -1.4944098476925216], [53.45699048294056, -1.4962062922577015], [53.46265616916046, -1.4968923583252969], [53.469267054412626, -1.4873236557612444], [53.469767241939515, -1.4782788827502245], [53.467779323511444, -1.4758930261871284]],
+                {"bubblingMouseEvents": true, "color": "#fbfdc7", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fbfdc7", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_9563a8c52574c446b4f4996bc425a1dc = L.polygon(
+                [[53.40300239382199, -1.4240454869068218], [53.404855604163224, -1.41695087734298], [53.40485487004331, -1.416800470498164], [53.40152854385942, -1.4166955304233122], [53.401100491380575, -1.4173932387224968], [53.397983517628354, -1.4271210770666634], [53.40282335682958, -1.4241983133348581]],
+                {"bubblingMouseEvents": true, "color": "#e6f5ed", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#e6f5ed", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_9e8c2397ccd90a5e2aea944838547dca = L.polygon(
+                [[53.383189384126275, -1.4107520666679312], [53.386502962475895, -1.4137434477620565], [53.38811934521807, -1.4134205345734296], [53.39013429215778, -1.4100697797449686], [53.38980856654609, -1.4096382259772176], [53.389628061458964, -1.4094903590953005], [53.3846756756831, -1.4077547073094148]],
+                {"bubblingMouseEvents": true, "color": "#edf8df", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#edf8df", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_b49421f7dcb08ce89441cfad4c998c1f = L.polygon(
+                [[53.32338122757493, -1.4668538477153856], [53.3208878563068, -1.4721391464704112], [53.3209544887146, -1.4729790037473316], [53.322622034817634, -1.4781228403502253], [53.32397355910258, -1.4788570172145927], [53.326225217130165, -1.4798805721602193], [53.32955088657823, -1.4798401435164543], [53.332870002040835, -1.4782981559075523], [53.3311855540999, -1.4633029770790678], [53.3308192639711, -1.4618060125047412]],
+                {"bubblingMouseEvents": true, "color": "#f6fbd0", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f6fbd0", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_9f22e6f76c3afc6e414880176795942b = L.polygon(
+                [[53.423959143338, -1.4860628028437834], [53.42954470671576, -1.4890055348118565], [53.43070155290259, -1.4862825301335616], [53.43087483718292, -1.4847753594571331], [53.430846762720556, -1.4783038479328448], [53.42936876295276, -1.4774189184965105], [53.42859446650161, -1.4771274099475507], [53.42716359497488, -1.4788004065188876], [53.42707436975368, -1.4789519922032373]],
+                {"bubblingMouseEvents": true, "color": "#fecc7e", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fecc7e", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_3fa3218990829d3bfabc71c2a2284969 = L.polygon(
+                [[53.36671932343206, -1.4696194187963427], [53.36626590477751, -1.4687233640811532], [53.365279872666854, -1.469336732715946], [53.36468133108445, -1.470170678485176], [53.36492634533207, -1.4706936056794095]],
+                {"bubblingMouseEvents": true, "color": "#fee294", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fee294", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_159ef6d4df3782516a41552e2efe7673 = L.polygon(
+                [[53.3824869057108, -1.4843070149740767], [53.38191740053598, -1.4835622148698413], [53.381881447659296, -1.4835626496778012], [53.38143463487852, -1.4841693886348168], [53.381977171648096, -1.4849145137376183], [53.382013254175604, -1.4849441456771624], [53.38242593433701, -1.4847587632823274]],
+                {"bubblingMouseEvents": true, "color": "#f7814c", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f7814c", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_e8a279e07d816a31a7a225040f8f5173 = L.polygon(
+                [[53.373889264751405, -1.4669150462703195], [53.373184824482664, -1.4681863988315045], [53.37363490412105, -1.4683311016824896], [53.37675434733994, -1.4684125244558182], [53.37632801852983, -1.467545998080911]],
+                {"bubblingMouseEvents": true, "color": "#f2fad6", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f2fad6", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_69dbacc1dda6cbb6b1963d1db871ac08 = L.polygon(
+                [[53.35555174246891, -1.485233009579004], [53.35428690040307, -1.4837458586953622], [53.35150767083815, -1.4854319352537144], [53.35056204976628, -1.4891989463665627], [53.35179985992742, -1.4906864514647553]],
+                {"bubblingMouseEvents": true, "color": "#fdad60", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fdad60", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_28592a6ab32c6f6318add4d1e27b8c69 = L.polygon(
+                [[53.40780387643837, -1.3952490419069583], [53.40957564206324, -1.4080107833473516], [53.41191626245069, -1.408730506881446], [53.41634625736351, -1.4084434018958532], [53.41704309964309, -1.4057705941781564], [53.41588075296938, -1.3998136914032115], [53.414311278067494, -1.3969471311687254], [53.40914445921616, -1.3937257144332478], [53.40896469841864, -1.3937282693564388]],
+                {"bubblingMouseEvents": true, "color": "#fffdbc", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fffdbc", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_4043214d5b8f1d3407f0e18a265aa3ae = L.polygon(
+                [[53.36213664543639, -1.430907634420046], [53.36239049141385, -1.4275983755564916], [53.359957197184656, -1.4262786407570782], [53.35870750201687, -1.428098468593876], [53.358716123118754, -1.429901404382523], [53.3605166255699, -1.430478426989968]],
+                {"bubblingMouseEvents": true, "color": "#daf0f6", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#daf0f6", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_dd4533192db52edfdb73a11730d09a50 = L.polygon(
+                [[53.41739804571242, -1.4459688461151605], [53.416782097658746, -1.4488355640451533], [53.41705590158739, -1.449734783499117], [53.418584573975, -1.4498655231655058], [53.42600840526317, -1.4496944836511243], [53.42525531468403, -1.448169220347941], [53.42008269791553, -1.4453320839163009], [53.41928205800552, -1.4451920306268775]],
+                {"bubblingMouseEvents": true, "color": "#fdb164", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fdb164", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_1e76709f22deecfdf7868be48a9cee22 = L.polygon(
+                [[53.381559647317914, -1.4324528246162909], [53.3807649618076, -1.4354700234263695], [53.38076567219475, -1.4356203458616619], [53.384108987021406, -1.4393347438451238], [53.38446921859395, -1.4394803583665954], [53.38580683717525, -1.4372075539882554], [53.38607293741098, -1.436452293695497]],
+                {"bubblingMouseEvents": true, "color": "#d02927", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#d02927", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_55b566412d7c495ebd907b10d96226e9 = L.polygon(
+                [[53.37275328091403, -1.4722199016594986], [53.37248668742655, -1.4729145865949038], [53.37274986481576, -1.47348249185831], [53.37293848488895, -1.4734501061368404], [53.373045415685425, -1.4732383619082385], [53.37313423703733, -1.4729967790896814], [53.37311559734088, -1.4728467044362699], [53.37308783652628, -1.4726666816033194]],
+                {"bubblingMouseEvents": true, "color": "#fdaf62", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fdaf62", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_22b20400a4d4ff4d2ffea8b043507871 = L.polygon(
+                [[53.403589993954945, -1.4942800078604506], [53.40395714790596, -1.4960806140480163], [53.40936019479757, -1.498423708614712], [53.411068583614394, -1.4985540595553652], [53.40978846863859, -1.497666504651401]],
+                {"bubblingMouseEvents": true, "color": "#fdc576", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fdc576", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_0b7e91134cddc18d9f7504f94c31edfa = L.polygon(
+                [[53.370440260030016, -1.4776891639009675], [53.37250755214819, -1.4776638869554715], [53.37331254510333, -1.476752211695066], [53.373578237681016, -1.4758471197047418], [53.373575597836144, -1.4752459272149672], [53.36551091342197, -1.4748340328789684], [53.365232476463376, -1.4748825381703479], [53.36377974975736, -1.4756667768883829], [53.36981042670637, -1.4775465713482114]],
+                {"bubblingMouseEvents": true, "color": "#f3fbd4", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f3fbd4", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_30e45f15fc229499a9f5c3529d09d76b = L.polygon(
+                [[53.368916605527694, -1.367094195978616], [53.36291128535424, -1.3703388131069933], [53.36913988560894, -1.3753569146839504], [53.371035231472156, -1.376832178856142], [53.372112230791004, -1.3765158625118183], [53.373996584310035, -1.375887121505453], [53.37380186576419, -1.373034118983454], [53.371890618997526, -1.3685531406918996], [53.369141625478875, -1.3671509786767666]],
+                {"bubblingMouseEvents": true, "color": "#fee090", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fee090", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_07626958524a9178e63f0e6ee4da9768 = L.polygon(
+                [[53.33987033561512, -1.4758097642134747], [53.33800836720354, -1.4816896477502595], [53.33800901903893, -1.481839820944489], [53.33918400398361, -1.4833274379712182], [53.34708913312798, -1.4821804268259104], [53.348418402799474, -1.4778080147664747], [53.348506971229405, -1.4775064969873342], [53.34850434058725, -1.4769056571043737], [53.34846799268915, -1.4768159710856859], [53.342746581898176, -1.4757745080797902]],
+                {"bubblingMouseEvents": true, "color": "#fed283", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fed283", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_9b06d8a353e7d44ab0795c553a42ff9c = L.polygon(
+                [[53.36427637536182, -1.4087888732429965], [53.362639855324076, -1.4050548106944143], [53.36254997403478, -1.4050560621582038], [53.353845667193156, -1.4080317335599655], [53.353218730280894, -1.4084911213551308], [53.3547645224025, -1.4120755013579411], [53.36015000340825, -1.4104988165799133], [53.36095745220931, -1.410187153113217]],
+                {"bubblingMouseEvents": true, "color": "#d4edf4", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#d4edf4", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_5830b50c07a680ebef51a0f988eb85c4 = L.polygon(
+                [[53.37705510212599, -1.4693407559028906], [53.37607885747561, -1.4701345236368275], [53.37643259608865, -1.470851653486245], [53.37706443283475, -1.4714450995415398], [53.37796524835849, -1.4718849162538825], [53.37850520536619, -1.4720285628211274], [53.378770861555964, -1.4711233313565424], [53.378498551581906, -1.4705254092287185], [53.377235533959215, -1.4694888332012008]],
+                {"bubblingMouseEvents": true, "color": "#ed5f3c", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ed5f3c", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_af91cd5e91ebc7244e3b08c1a7b3bcc5 = L.polygon(
+                [[53.3886074115222, -1.459724537966901], [53.38697661019934, -1.4628574933992724], [53.388791930483116, -1.460774722247276], [53.38917611335361, -1.4602586412561736], [53.389238622932915, -1.4601676340327225]],
+                {"bubblingMouseEvents": true, "color": "#fedc8c", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fedc8c", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_c90a356489f7f0e02a3a8dc52fb3b711 = L.polygon(
+                [[53.36839442756121, -1.499520948745771], [53.366586905704494, -1.5014807518707416], [53.36694894392212, -1.5020776586373303], [53.36731035330428, -1.5025242988236895], [53.36740023597977, -1.5025232522879561], [53.36901499161207, -1.501753000216463], [53.36928338527232, -1.5014492882822268]],
+                {"bubblingMouseEvents": true, "color": "#a50026", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#a50026", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_c5c34efebf43c5bff0d244e1f6385aa0 = L.polygon(
+                [[53.41832360754021, -1.492450203858506], [53.41994977114238, -1.4943869539790684], [53.420310571073905, -1.4946836177613103], [53.42040045283848, -1.4946825526696388], [53.42067009812395, -1.4946793573602295], [53.42326838044056, -1.492692307903751], [53.423357623254674, -1.4925407644662367], [53.4232671024991, -1.4923913604814711], [53.421285226570156, -1.4913616329919377], [53.42011548308972, -1.4910746451165793], [53.42002560137094, -1.4910757178055103]],
+                {"bubblingMouseEvents": true, "color": "#fdbb6d", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fdbb6d", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_e1ab1ff9c4ba500bd2590bc6ffc5ab47 = L.polygon(
+                [[53.37886007794533, -1.4709719016492735], [53.38227958681617, -1.4718315596772364], [53.38245669046871, -1.4712280189963771], [53.38254524114427, -1.4709262467835755], [53.382454693195626, -1.4707770311657782], [53.380741600883475, -1.469595609612641], [53.38065171887377, -1.4695967259946061]],
+                {"bubblingMouseEvents": true, "color": "#fff1aa", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fff1aa", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_9ecb75ec34a3e2a4b26b9ef707765821 = L.polygon(
+                [[53.35870742369996, -1.3743073774949126], [53.36280631675391, -1.3674852465771243], [53.362426837865506, -1.3637341686026851], [53.35990377027862, -1.3625696649978125], [53.357667963838594, -1.3647065292991427], [53.35689876717856, -1.3722303810233512], [53.3581596229031, -1.3744055495797909]],
+                {"bubblingMouseEvents": true, "color": "#c1e4ef", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#c1e4ef", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_4e30d4a3b30df566b3603c997c060f47 = L.polygon(
+                [[53.3715606632353, -1.4186378910168653], [53.37340893209132, -1.4197851219206132], [53.3759219618814, -1.4153166926905147], [53.3764362742521, -1.4138816426760936], [53.37481767435378, -1.4137535438890787], [53.372404128254686, -1.4164921154528245]],
+                {"bubblingMouseEvents": true, "color": "#f8fccb", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f8fccb", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_33a0926093738bb50eb7c7e623c113cc = L.polygon(
+                [[53.408065699513685, -1.4493994691821888], [53.41030471370665, -1.4495811792641398], [53.41066809359737, -1.4484632554836474], [53.41075658567969, -1.448161236366434], [53.41047998486755, -1.4466604497790572], [53.409939303869656, -1.4463665942159252], [53.40832004731502, -1.4460867512365563], [53.408230166072386, -1.4460879182936561], [53.407782851026255, -1.4465450072885753], [53.40778980933751, -1.448049187041524], [53.407975124939, -1.4492502105519829]],
+                {"bubblingMouseEvents": true, "color": "#b9e0ed", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#b9e0ed", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_3245a890d307109266c5aac6ee25aa3b = L.polygon(
+                [[53.38014808546442, -1.4838993031004084], [53.37981675492316, -1.4841889307095366], [53.38008705065759, -1.484335995079333], [53.380176932887025, -1.4843349097571363], [53.38096614353695, -1.4839194829310922]],
+                {"bubblingMouseEvents": true, "color": "#fed081", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fed081", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_71d86be1df07aea96581727e1b97ba60 = L.polygon(
+                [[53.36022407046678, -1.389461424117305], [53.35909438592594, -1.379560671809822], [53.357478870167974, -1.3800348766273152], [53.351401093759485, -1.386733100085893], [53.352581101213076, -1.3889696653993129], [53.355664615974284, -1.3943343601690217], [53.35934593173032, -1.393530902874319]],
+                {"bubblingMouseEvents": true, "color": "#e5f5ef", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#e5f5ef", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_ff50a58501863d356e7b4ec1ca75995a = L.polygon(
+                [[53.40875425426248, -1.5039967439223612], [53.41020171271057, -1.506236441072217], [53.41190386936383, -1.5048627683572626], [53.412254651779854, -1.5027525035091533], [53.41090704754731, -1.5029186496795308]],
+                {"bubblingMouseEvents": true, "color": "#fff0a8", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fff0a8", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_4afb0e252c6c8731ecfff5c4c243e906 = L.polygon(
+                [[53.422958782607665, -1.4433384219156868], [53.42422201842068, -1.4443753237847368], [53.42826245892038, -1.443419665821198], [53.430862688057026, -1.442031136726053], [53.43095186612683, -1.4418794605347884], [53.43094764553629, -1.4409764629861141], [53.42385408507237, -1.4425743139264036]],
+                {"bubblingMouseEvents": true, "color": "#679ec9", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#679ec9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_45761d34a43b50c3adea6e4fee60ddfd = L.polygon(
+                [[53.385613690484625, -1.4924031059012415], [53.384415112737194, -1.4959203759141195], [53.38616491150113, -1.4973430818410174], [53.38760555754009, -1.497927542659075], [53.390483054163084, -1.498194432503078], [53.39057293642805, -1.4981933759631936]],
+                {"bubblingMouseEvents": true, "color": "#def2f7", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#def2f7", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_859de60f0b4c28267b017640dd220f58 = L.polygon(
+                [[53.3734175868819, -1.4802229853579993], [53.37350805774449, -1.4803571598336815], [53.37452261539482, -1.480089290973898], [53.374577471366464, -1.4782398136738566], [53.373678649027376, -1.4782507927377013]],
+                {"bubblingMouseEvents": true, "color": "#fba35c", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fba35c", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_3ac39975034a84bc491bdc1da8e02188 = L.polygon(
+                [[53.40615763833619, -1.4259583692003286], [53.40508700451948, -1.4276273684717178], [53.404819522363155, -1.4280822069446624], [53.40462351157652, -1.4284458327986849], [53.4059253189719, -1.4337833639799815], [53.406026040906724, -1.4341731214925746], [53.406381132348876, -1.435131113552725], [53.4067434998396, -1.43572800917573], [53.4082672124569, -1.4348052819699797], [53.407892703635085, -1.431651266933696]],
+                {"bubblingMouseEvents": true, "color": "#fffdbc", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fffdbc", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_99155e9c926ba2f76f52bbfe792d89db = L.polygon(
+                [[53.38751150891669, -1.4177892029180885], [53.387179694050964, -1.4235072004194484], [53.38944047735453, -1.426333556539618], [53.38946758613082, -1.4263632647494093], [53.390324083898086, -1.423164004623953], [53.39084077140526, -1.4184956319203352], [53.3902985556633, -1.4179015561628177]],
+                {"bubblingMouseEvents": true, "color": "#f88950", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f88950", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_72c307ea1ef133d54ead6b0399cbb9f6 = L.polygon(
+                [[53.383616488919266, -1.4692592155612219], [53.384858468802, -1.4716342787756178], [53.38641149742905, -1.4711790404542866], [53.386677146399514, -1.470273635700224], [53.386405499639835, -1.4698259517553125], [53.38523369588934, -1.4690887657845486]],
+                {"bubblingMouseEvents": true, "color": "#feefa6", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#feefa6", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_c4de2d0ed866fdac7f52e53fcf9097de = L.polygon(
+                [[53.3643011619323, -1.471602991746266], [53.36295823993086, -1.4728217487756445], [53.362958903137674, -1.4729720094666634], [53.3637691699142, -1.4732625593011228], [53.3638590522329, -1.473261451319625], [53.36493498731071, -1.4726470844753474], [53.36502420596805, -1.4724957071997924], [53.36502354214409, -1.4723454392540198]],
+                {"bubblingMouseEvents": true, "color": "#fdc173", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fdc173", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_7f6baa8a3cdd45c1ad925a6f92b29fb9 = L.polygon(
+                [[53.41918308943282, -1.4832614920705725], [53.42078856154638, -1.4803830569306111], [53.41881825709087, -1.477909334375934], [53.41753018827438, -1.4772931664724773], [53.412615865390954, -1.481987060002486], [53.41260713807674, -1.4820473434921444], [53.418346799885384, -1.4831813470643014]],
+                {"bubblingMouseEvents": true, "color": "#c5e6f0", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#c5e6f0", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_1b4888da1ce89189592f5328d804830b = L.polygon(
+                [[53.407673173933055, -1.4618899373658196], [53.406100932850954, -1.4721383893585824], [53.40888650195332, -1.4739692626855672], [53.41438659885848, -1.4757971020978504], [53.42066041380034, -1.4716572295908725], [53.42128225432665, -1.4699943056389981], [53.42136411374941, -1.4681875910903932], [53.42126752656702, -1.4666840514703263], [53.421084403868996, -1.465933972893154], [53.408386120910656, -1.4605270833433202]],
+                {"bubblingMouseEvents": true, "color": "#e5f5ef", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#e5f5ef", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_c837630f71958361c52b2ca40a589052 = L.polygon(
+                [[53.3967177585354, -1.464283895943291], [53.39700286348683, -1.467739260154791], [53.39808679829361, -1.468928882498363], [53.39879599473292, -1.4687245433513216], [53.40336156877796, -1.4625459599653556], [53.403002015431895, -1.4605500357539625], [53.40218429708358, -1.4606054958814565], [53.40092934779491, -1.4613733727651816]],
+                {"bubblingMouseEvents": true, "color": "#6ba2cb", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#6ba2cb", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_3a1169f202ab277676184722e1f10494 = L.polygon(
+                [[53.422165619413036, -1.4091902940845384], [53.4164221796131, -1.4110753593458805], [53.421232926200005, -1.4206392945229003], [53.42249198465357, -1.4207726652196697], [53.42329945113201, -1.4204607314463962], [53.42642916908835, -1.4171073390771338], [53.426063033144615, -1.4157579196421568], [53.42588106412092, -1.4153089401548224]],
+                {"bubblingMouseEvents": true, "color": "#fa9656", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fa9656", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_80fc340e607cce6f58a1db4af9daa633 = L.polygon(
+                [[53.42438704789185, -1.524280882015329], [53.425834479218665, -1.5357772277259085], [53.431875902285036, -1.543056394813317], [53.44164056174803, -1.5462185385988518], [53.44017305683434, -1.538556588507818], [53.428175823551136, -1.5277000694461726]],
+                {"bubblingMouseEvents": true, "color": "#4b7db8", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#4b7db8", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_4f999b870e2d2eb9ac5ac4109deabad5 = L.polygon(
+                [[53.39019539465489, -1.4338416659045536], [53.39138231667081, -1.4377355233634428], [53.3950518338522, -1.4343787749104577], [53.39754418949688, -1.4292324487578285], [53.396999868629074, -1.4281870050519863], [53.392692759859905, -1.4297484464355255], [53.390633374972424, -1.4314299911105615]],
+                {"bubblingMouseEvents": true, "color": "#fed889", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fed889", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_b5ffbe58cd66612bbef4be661afbc9bd = L.polygon(
+                [[53.35707261110285, -1.483561963842228], [53.3587829772254, -1.4841423130861935], [53.3594082574534, -1.4832332279439917], [53.359397177307116, -1.4806790051522831], [53.35921610518913, -1.480380694111458], [53.357605399578645, -1.4820530264058998]],
+                {"bubblingMouseEvents": true, "color": "#f57245", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#f57245", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_7684979229ad042dec134b618b5515b0 = L.polygon(
+                [[53.36678850922761, -1.506738274526485], [53.366958320228655, -1.5043317905083762], [53.359693345012445, -1.5081724810119153], [53.35870710688052, -1.5087848448616994], [53.35834911968564, -1.5091645902357078], [53.35827758383844, -1.5092555630526097], [53.36203462628306, -1.509197393691816], [53.36445713509295, -1.508117652221104], [53.365892162701854, -1.5073497379091196]],
+                {"bubblingMouseEvents": true, "color": "#fff0a8", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fff0a8", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_a122746e24a4b2bdcf4cf9ca22d373cf = L.polygon(
+                [[53.39327513159034, -1.458312075842627], [53.39300187029624, -1.4575185573811758], [53.39282231184052, -1.4575659516622128], [53.39039959964173, -1.4584989309594112], [53.38950758859238, -1.4600138703825774], [53.3930068498938, -1.458616230095297]],
+                {"bubblingMouseEvents": true, "color": "#ecf8e2", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#ecf8e2", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_5abfe0c79676243ba7f681c0340019a4 = L.polygon(
+                [[53.34921593515164, -1.3989323596207432], [53.34795986311596, -1.3994006693474736], [53.350412243561756, -1.4044738738937814], [53.351491570188045, -1.4046090664269004], [53.35150924683989, -1.40454872857905], [53.35149082103634, -1.4044588478213822]],
+                {"bubblingMouseEvents": true, "color": "#def2f7", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#def2f7", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_6134e79a03508e20420fc5c042747eca = L.polygon(
+                [[53.382176372738755, -1.468826105408482], [53.38253723726224, -1.4691222921301934], [53.3826251140007, -1.4686701851945796], [53.382800192393276, -1.467615635358847], [53.38279952227348, -1.4674653049539468]],
+                {"bubblingMouseEvents": true, "color": "#fff2ac", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fff2ac", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_5466c72d281f9ff6a63e72530ae723ef = L.polygon(
+                [[53.32682982947101, -1.5168080864856743], [53.321791485976235, -1.5156639799895573], [53.31632797632576, -1.5205291506916359], [53.31517330409126, -1.523994398646544], [53.316890052230434, -1.5262269085772768], [53.3198663165102, -1.528745955459611], [53.322102711836706, -1.5260190817937398], [53.32674298186467, -1.5175597736530246]],
+                {"bubblingMouseEvents": true, "color": "#cdeaf3", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#cdeaf3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_f48b1af1ee9d6a8000fafd800c6d93e6 = L.polygon(
+                [[53.376524196409704, -1.513540401997519], [53.37348803770455, -1.5162504187987953], [53.373515732857264, -1.5164304720541695], [53.378176070226864, -1.52193962744637], [53.380759491791295, -1.5228577953441733], [53.38078627646991, -1.522812396698039], [53.38079508458264, -1.5227671988789524], [53.38069399018067, -1.5222121039634362], [53.37969079564824, -1.5186154681145732], [53.3788757841119, -1.5171214083330016], [53.378839587954005, -1.5170616877833383]],
+                {"bubblingMouseEvents": true, "color": "#fdad60", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fdad60", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_d1186c5a456630b209d38249142799cc = L.polygon(
+                [[53.36631121852694, -1.4204826408966071], [53.36945049815617, -1.4190874263426254], [53.36913167025763, -1.418220074095631], [53.365762433994384, -1.4185364559219118], [53.36594731394091, -1.4195858982569602]],
+                {"bubblingMouseEvents": true, "color": "#def2f7", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#def2f7", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_fd332028a581b2b745296f28b0a1f6e4 = L.polygon(
+                [[53.34453530755876, -1.4945280797638725], [53.345153044410615, -1.4982008269581182], [53.34625512997472, -1.4973617386913816], [53.34723750963556, -1.4958480560703564], [53.348307843464006, -1.4938826117688935], [53.34459663543434, -1.4941518444294621]],
+                {"bubblingMouseEvents": true, "color": "#83b9d8", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#83b9d8", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_6371a0463ed52bafaf98255a54dd48b7 = L.polygon(
+                [[53.37343160757916, -1.4630729297087604], [53.37442368584003, -1.4638120053423038], [53.37559012682402, -1.4633464221054437], [53.37486566219343, -1.4621530377084984], [53.37441557531224, -1.4620083959597463], [53.37360866743843, -1.4624694783443606]],
+                {"bubblingMouseEvents": true, "color": "#dd3d2d", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#dd3d2d", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_a6a127ef9ff2dda71ffe7dc722987eba = L.polygon(
+                [[53.345697603149006, -1.3964132529502011], [53.34766746666269, -1.394898307330632], [53.34439960209736, -1.388635978003361], [53.342686469329514, -1.3876090843734201], [53.33972269558951, -1.3881020900086993], [53.34073592547805, -1.392893714879852]],
+                {"bubblingMouseEvents": true, "color": "#fca55d", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fca55d", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_19e0e4f94a24efdf1f2a144d5e849505 = L.polygon(
+                [[53.38413363439199, -1.464291453125841], [53.385395349477506, -1.465027362176836], [53.38557174429788, -1.4642734092533285], [53.38530142437199, -1.4641264534615854]],
+                {"bubblingMouseEvents": true, "color": "#fff7b3", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fff7b3", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_e02f8e8bc6e87065236591e53add0f20 = L.polygon(
+                [[53.37951375665684, -1.4765259083717308], [53.3811256977139, -1.4751531535778384], [53.38121293619269, -1.47455074888754], [53.38129131582217, -1.4739785175278106], [53.37995194051662, -1.4739649497090566], [53.378517134487005, -1.4747342407920998], [53.37851779541806, -1.4748845562914972], [53.37869954132427, -1.4753332943959026]],
+                {"bubblingMouseEvents": true, "color": "#af0926", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#af0926", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_2f2963c868d75b138ff730b7d9d61b71 = L.polygon(
+                [[53.42461788292382, -1.4929772231724467], [53.42864700567427, -1.493501205028931], [53.43054623572806, -1.492003669692478], [53.43045571435345, -1.491854241746333], [53.43036583278047, -1.4918553131946815], [53.427670024687345, -1.4920379432054565]],
+                {"bubblingMouseEvents": true, "color": "#fdc173", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#fdc173", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_2e46f04703ea86f2eaa05b20327647c3 = L.polygon(
+                [[53.35668365177098, -1.4768055598700334], [53.356684309910044, -1.4769557985867587], [53.35740139466916, -1.4764962752988946], [53.35829692360862, -1.4757340439391606], [53.358655133761935, -1.4754291424202857], [53.358565251333125, -1.475430245630982], [53.3568581447692, -1.475601444803122]],
+                {"bubblingMouseEvents": true, "color": "#313695", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#313695", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_2551b8b664f6d6cdbe229331cfc4f895 = L.polygon(
+                [[53.416594644003766, -1.4280747634775366], [53.4159013982093, -1.4335004673643748], [53.417621234868896, -1.4360354714244785], [53.41950873445358, -1.4360105083729202], [53.41777172299018, -1.4298645255154558]],
+                {"bubblingMouseEvents": true, "color": "#e6f5ed", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#e6f5ed", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+    
+            var polygon_417ac9a2c21c9e80d06606489249d7f1 = L.polygon(
+                [[53.35973158152892, -1.4168154225337506], [53.35757809079947, -1.417596060486593], [53.35759780663084, -1.4216525526174166], [53.35903664016887, -1.4217833363174839], [53.35965268526981, -1.4190703638255944]],
+                {"bubblingMouseEvents": true, "color": "#b0dcea", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#b0dcea", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_2327147b5ea6c7140c8ee7d25fb4419a);
+        
+</script>
+</html>
