@@ -32,16 +32,6 @@ python -m http.server 8080
 
 Then open <http://localhost:8080/>.
 
-## Deployment
-
-This repository is configured for **GitHub Pages**:
-
-1. Push to `main`.
-2. Repository → Settings → Pages → Source: `Deploy from a branch`, Branch: `main` / `(root)`.
-3. Enforce HTTPS.
-
-> Note: for the root URL `https://georgp23.github.io/` to work, the repo must be named `georgp23.github.io` (matching the GitHub username exactly).
-
 ## Contact
 
 - LinkedIn - [in/george-p-28a83b1a5](https://www.linkedin.com/in/george-p-28a83b1a5)
