@@ -2609,9 +2609,20 @@ function drawTrack() {
   const sf = getPos(0);
   ctx.save();
   ctx.translate(sf.x, sf.y);
-  for (let i = 0; i < 6; i++) {
-    ctx.fillStyle = i % 2 === 0 ? '#fff' : '#000';
-    ctx.fillRect(-3, -12 + i * 4, 6, 4);
+  ctx.rotate(Math.PI / 2);
+  const finishTrackWidth = 48;
+  const finishStripeWidth = 10;
+  const finishSquare = 5;
+  for (let row = 0; row < finishStripeWidth / finishSquare; row++) {
+    for (let col = 0; col < finishTrackWidth / finishSquare; col++) {
+      ctx.fillStyle = (row + col) % 2 === 0 ? '#fff' : '#000';
+      ctx.fillRect(
+        -finishStripeWidth / 2 + row * finishSquare,
+        -finishTrackWidth / 2 + col * finishSquare,
+        finishSquare,
+        finishSquare
+      );
+    }
   }
   ctx.restore();
 
