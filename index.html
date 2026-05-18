@@ -306,6 +306,8 @@
 
   /* ─── MET OFFICE ────────────────────────────────────────────────────── */
   #met-office {
+    position: relative;
+    --met-sunlight-opacity: 0.12;
     min-height: 100vh;
     background:
       radial-gradient(ellipse 70% 80% at 50% 100%, rgba(13,70,26,0.5) 0%, rgba(6,13,8,0.9) 48%, var(--bg) 100%),
@@ -313,6 +315,20 @@
     display: block;
     overflow: hidden;
     isolation: isolate;
+  }
+  #met-office::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: var(--met-sunlight-opacity);
+    background:
+      radial-gradient(ellipse 70% 65% at 72% 16%, rgba(255,223,132,0.45), transparent 68%),
+      linear-gradient(135deg, rgba(255,215,130,0.18), transparent 42%),
+      linear-gradient(180deg, rgba(255,255,255,0.05), transparent 55%);
+    mix-blend-mode: screen;
+    transition: opacity 0.35s ease;
   }
   .met-content {
     position: relative;
@@ -373,26 +389,135 @@
     height: min(1500px, 170vh);
     transform: translateX(-50%);
     display: flex; align-items: flex-end; justify-content: center;
+    --wind-duration: 8.5s;
+    --wind-rot-a: -0.22deg;
+    --wind-rot-b: 0.62deg;
+    --wind-x-a: -2px;
+    --wind-x-b: 5px;
+    --wind-glow-scale-a: 0.995;
+    --wind-glow-scale-b: 1.015;
+    --sun-opacity: 0.35;
+    --sun-scale: 1;
+    --sun-ray-speed: 28s;
+    --sun-wash-opacity: 0.12;
+  }
+  .tree-sun {
+    position: absolute;
+    top: 8%;
+    right: 13%;
+    z-index: 0;
+    width: clamp(140px, 18vw, 260px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: var(--sun-opacity);
+    transform: scale(var(--sun-scale));
+    transform-origin: center;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255,245,180,0.75) 0 10%, rgba(255,205,84,0.38) 18%, rgba(255,173,51,0.12) 38%, transparent 68%);
+    filter: blur(0.2px);
+  }
+  .tree-sun::before {
+    content: '';
+    position: absolute;
+    inset: -32%;
+    border-radius: 50%;
+    background:
+      repeating-conic-gradient(from 0deg, rgba(255,224,120,0.2) 0deg 7deg, transparent 7deg 18deg);
+    animation: sunRays var(--sun-ray-speed) linear infinite;
+    mask-image: radial-gradient(circle, transparent 0 34%, black 36% 58%, transparent 70%);
+  }
+  .tree-sun::after {
+    content: '';
+    position: absolute;
+    inset: -70%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,206,90,0.22), transparent 62%);
+  }
+  .tree-sun-wash {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: var(--sun-wash-opacity);
+    background:
+      radial-gradient(ellipse 55% 45% at 76% 16%, rgba(255,207,92,0.45), transparent 66%),
+      linear-gradient(135deg, rgba(255,202,92,0.12), transparent 46%);
+    mix-blend-mode: screen;
+    transition: opacity 0.35s ease;
   }
   #tree-svg {
+    position: relative;
+    z-index: 1;
     width: 100%; height: 100%;
     overflow: visible;
+  }
+  #tree-rain-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    opacity: 0.62;
+  }
+  .rain-controls {
+    position: absolute;
+    z-index: 4;
+    right: clamp(1rem, 5vw, 5rem);
+    top: 34%;
+    width: 170px;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid rgba(120,220,255,0.16);
+    background: rgba(8,12,16,0.62);
+    backdrop-filter: blur(8px);
+    pointer-events: auto;
+  }
+  .weather-control-row + .weather-control-row { margin-top: 0.75rem; }
+  .rain-control-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    color: #9edbff;
+    text-transform: uppercase;
+  }
+  .rain-control-label output { color: var(--muted); }
+  .rain-slider,
+  .wind-slider,
+  .sun-slider {
+    width: 100%;
+    accent-color: #9edbff;
+  }
+  .sun-slider { accent-color: var(--racing-yellow); }
+  @media (max-width: 900px) {
+    .rain-controls {
+      right: 1rem;
+      top: auto;
+      bottom: 7rem;
+      width: 150px;
+    }
   }
   .tree-canopy-glow {
     pointer-events: none;
     transform-box: fill-box;
     transform-origin: center;
-    animation: treeWindGlow 8.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    animation: treeWindGlow var(--wind-duration) cubic-bezier(0.45, 0, 0.55, 1) infinite;
   }
   #tree-branches {
     transform-box: view-box;
     transform-origin: 250px 575px;
-    animation: treeWind 8.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    animation: treeWind var(--wind-duration) cubic-bezier(0.45, 0, 0.55, 1) infinite;
   }
   #leaves-layer {
     transform-box: view-box;
     transform-origin: 250px 575px;
-    animation: treeWind 8.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    animation: treeWind var(--wind-duration) cubic-bezier(0.45, 0, 0.55, 1) infinite;
   }
   .tree-branch {
     fill: none;
@@ -437,17 +562,21 @@
     pointer-events: none;
   }
   @keyframes treeWind {
-    0%, 100% { transform: rotate(-0.22deg) translateX(-2px); }
-    50% { transform: rotate(0.62deg) translateX(5px); }
+    0%, 100% { transform: rotate(var(--wind-rot-a)) translateX(var(--wind-x-a)); }
+    50% { transform: rotate(var(--wind-rot-b)) translateX(var(--wind-x-b)); }
   }
   @keyframes treeWindGlow {
-    0%, 100% { transform: translateX(-2px) scaleX(0.995); opacity: 0.86; }
-    50% { transform: translateX(5px) scaleX(1.015); opacity: 1; }
+    0%, 100% { transform: translateX(var(--wind-x-a)) scaleX(var(--wind-glow-scale-a)); opacity: 0.86; }
+    50% { transform: translateX(var(--wind-x-b)) scaleX(var(--wind-glow-scale-b)); opacity: 1; }
+  }
+  @keyframes sunRays {
+    to { transform: rotate(360deg); }
   }
   @media (prefers-reduced-motion: reduce) {
     #leaves-layer,
     #tree-branches,
-    .tree-canopy-glow {
+    .tree-canopy-glow,
+    .tree-sun::before {
       animation: none;
     }
   }
@@ -1193,7 +1322,33 @@
   </div>
 
   <div class="tree-container">
+    <div class="tree-sun-wash"></div>
+    <div class="tree-sun" aria-hidden="true"></div>
     <div class="ground-glow"></div>
+    <canvas id="tree-rain-canvas"></canvas>
+    <div class="rain-controls" aria-label="Rain animation controls">
+      <div class="weather-control-row">
+        <label class="rain-control-label" for="raininess">
+          Raininess
+          <output id="raininess-value" for="raininess">60%</output>
+        </label>
+        <input class="rain-slider" id="raininess" type="range" min="0" max="100" step="5" value="60">
+      </div>
+      <div class="weather-control-row">
+        <label class="rain-control-label" for="windiness">
+          Windiness
+          <output id="windiness-value" for="windiness">60%</output>
+        </label>
+        <input class="wind-slider" id="windiness" type="range" min="0" max="100" step="5" value="60">
+      </div>
+      <div class="weather-control-row">
+        <label class="rain-control-label" for="sunniness">
+          Sunniness
+          <output id="sunniness-value" for="sunniness">0%</output>
+        </label>
+        <input class="sun-slider" id="sunniness" type="range" min="0" max="100" step="5" value="0">
+      </div>
+    </div>
     <svg id="tree-svg" viewBox="0 0 500 600" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="trunkGrad" x1="0%" y1="100%" x2="100%" y2="0%">
@@ -1766,7 +1921,7 @@ revEls.forEach(el => obs.observe(el));
   const svg = document.getElementById('tree-svg');
   const layer = document.getElementById('leaves-layer');
   const metContent = document.querySelector('.met-content');
-  const GLOW_RADIUS = 36;
+  const GLOW_RADIUS = 18;
   const CELL_SIZE = GLOW_RADIUS;
   const SHADES = ['#1a4f24', '#226830', '#2a7a38', '#1e5c2c', '#328f44', '#174020'];
 
@@ -1789,6 +1944,7 @@ revEls.forEach(el => obs.observe(el));
   let activeLeaf = null;
   let targetGlow = null;
   let currentGlow = null;
+  let glowTrail = [];
   let glowFrame = 0;
 
   function leafShape(size) {
@@ -1947,13 +2103,28 @@ revEls.forEach(el => obs.observe(el));
     return pt.matrixTransform(svg.getScreenCTM().inverse());
   }
 
-  function setGlowRadius(cx, cy) {
+  function addTrailPoint(cx, cy) {
+    const last = glowTrail[glowTrail.length - 1];
+    if (!last || Math.hypot(cx - last.x, cy - last.y) > 4) {
+      glowTrail.push({ x: cx, y: cy, age: 0 });
+      if (glowTrail.length > 8) glowTrail.shift();
+    }
+  }
+
+  function setGlowTrail() {
     const r2 = GLOW_RADIUS * GLOW_RADIUS;
     const nextLit = new Set();
 
-    getNearbyLeaves(cx, cy).forEach(({ el, x, y }) => {
-      const dx = x - cx, dy = y - cy;
-      if (dx * dx + dy * dy <= r2) nextLit.add(el);
+    glowTrail.forEach((point, index) => {
+      const ageFactor = Math.max(0.25, 1 - point.age);
+      const orderFactor = 0.45 + ((index + 1) / glowTrail.length) * 0.55;
+      const radius = GLOW_RADIUS * ageFactor * orderFactor;
+      const rr = radius * radius;
+
+      getNearbyLeaves(point.x, point.y).forEach(({ el, x, y }) => {
+        const dx = x - point.x, dy = y - point.y;
+        if (dx * dx + dy * dy <= rr) nextLit.add(el);
+      });
     });
 
     litLeaves.forEach(el => {
@@ -1972,17 +2143,21 @@ revEls.forEach(el => obs.observe(el));
       return;
     }
 
-    currentGlow.x += (targetGlow.x - currentGlow.x) * 0.16;
-    currentGlow.y += (targetGlow.y - currentGlow.y) * 0.16;
-    setGlowRadius(currentGlow.x, currentGlow.y);
+    currentGlow.x += (targetGlow.x - currentGlow.x) * 0.085;
+    currentGlow.y += (targetGlow.y - currentGlow.y) * 0.085;
+    addTrailPoint(currentGlow.x, currentGlow.y);
+    glowTrail.forEach(p => { p.age += 0.035; });
+    glowTrail = glowTrail.filter(p => p.age < 1);
+    setGlowTrail();
 
     const dx = targetGlow.x - currentGlow.x;
     const dy = targetGlow.y - currentGlow.y;
-    if (dx * dx + dy * dy > 0.2) {
+    if (dx * dx + dy * dy > 0.2 || glowTrail.length > 1) {
       glowFrame = requestAnimationFrame(animateGlow);
     } else {
       currentGlow = { ...targetGlow };
-      setGlowRadius(currentGlow.x, currentGlow.y);
+      addTrailPoint(currentGlow.x, currentGlow.y);
+      setGlowTrail();
       glowFrame = 0;
     }
   }
@@ -1998,6 +2173,7 @@ revEls.forEach(el => obs.observe(el));
     activeLeaf = null;
     targetGlow = null;
     currentGlow = null;
+    glowTrail = [];
     if (glowFrame) {
       cancelAnimationFrame(glowFrame);
       glowFrame = 0;
@@ -2037,6 +2213,341 @@ revEls.forEach(el => obs.observe(el));
   }
 
   svg.addEventListener('mouseleave', clearGlow);
+})();
+
+// ─── TREE RAIN CANVAS ──────────────────────────────────────────────────────
+(function initTreeRain() {
+  const canvas = document.getElementById('tree-rain-canvas');
+  const svg = document.getElementById('tree-svg');
+  if (!canvas || !svg || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const ctx = canvas.getContext('2d');
+  const metOffice = document.getElementById('met-office');
+  const treeContainer = document.querySelector('.tree-container');
+  const metBadge = document.querySelector('.met-badge');
+  const rainControls = document.querySelector('.rain-controls');
+  const rainInput = document.getElementById('raininess');
+  const rainOutput = document.getElementById('raininess-value');
+  const windInput = document.getElementById('windiness');
+  const windOutput = document.getElementById('windiness-value');
+  const sunInput = document.getElementById('sunniness');
+  const sunOutput = document.getElementById('sunniness-value');
+  let W = 0, H = 0, scale = 1, ox = 0, oy = 0;
+  let raininess = rainInput ? Number(rainInput.value) : 60;
+  let windiness = windInput ? Number(windInput.value) : 60;
+  let sunniness = sunInput ? Number(sunInput.value) : 0;
+  let sunIntroPlayed = false;
+  let rainWind = 1;
+  let currentWindStrength = windiness / 60;
+  let targetWindStrength = currentWindStrength;
+  let windTweenFrame = 0;
+  const MAX_RAIN = 125;
+  const rain = [];
+  const splashes = [];
+  const drips = [];
+  const canopy = [
+    { cx: 250, cy: 255, rx: 118, ry: 96 },
+    { cx: 168, cy: 330, rx: 88,  ry: 68 },
+    { cx: 332, cy: 330, rx: 88,  ry: 68 },
+    { cx: 118, cy: 368, rx: 58,  ry: 46 },
+    { cx: 382, cy: 368, rx: 58,  ry: 46 },
+    { cx: 200, cy: 285, rx: 62,  ry: 52 },
+    { cx: 300, cy: 285, rx: 62,  ry: 52 },
+  ];
+
+  function resizeRain() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.offsetWidth;
+    H = canvas.offsetHeight;
+    canvas.width = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    scale = Math.min(W / 500, H / 600);
+    ox = (W - 500 * scale) / 2;
+    oy = (H - 600 * scale) / 2;
+  }
+
+  function toSvgPoint(x, y) {
+    return { x: (x - ox) / scale, y: (y - oy) / scale };
+  }
+
+  function toCanvasPoint(x, y) {
+    return { x: ox + x * scale, y: oy + y * scale };
+  }
+
+  function canopyHit(x, y) {
+    for (const c of canopy) {
+      const nx = (x - c.cx) / c.rx;
+      const ny = (y - c.cy) / c.ry;
+      if (nx * nx + ny * ny <= 1) {
+        return { canopy: c, nx, ny };
+      }
+    }
+    return null;
+  }
+
+  function getElementRainBoxes() {
+    const canvasRect = canvas.getBoundingClientRect();
+    return [metBadge, rainControls]
+      .filter(Boolean)
+      .map(el => {
+        const r = el.getBoundingClientRect();
+        return {
+          left: r.left - canvasRect.left,
+          right: r.right - canvasRect.left,
+          top: r.top - canvasRect.top,
+          bottom: r.bottom - canvasRect.top,
+        };
+      })
+      .filter(box => (
+        box.right > 0 &&
+        box.left < W &&
+        box.bottom > 0 &&
+        box.top < H
+      ));
+  }
+
+  function boxRainHit(prevX, prevY, d, boxes) {
+    for (const box of boxes) {
+      const crossedTop = prevY <= box.top && d.y >= box.top;
+      if (!crossedTop) continue;
+
+      const t = (box.top - prevY) / Math.max(d.y - prevY, 0.001);
+      const xAtTop = prevX + (d.x - prevX) * t;
+      const edgePad = 5;
+      if (xAtTop >= box.left - edgePad && xAtTop <= box.right + edgePad) {
+        const center = (box.left + box.right) / 2;
+        const halfWidth = Math.max((box.right - box.left) / 2, 1);
+        return {
+          x: xAtTop,
+          y: box.top,
+          nx: Math.max(-1, Math.min(1, (xAtTop - center) / halfWidth)),
+          ny: -1,
+        };
+      }
+    }
+
+    return null;
+  }
+
+  function resetDrop(d) {
+    d.x = Math.random() * W;
+    d.y = -40 - Math.random() * H * 0.35;
+    d.vx = -rainWind + Math.random() * 0.45;
+    d.vy = 7 + Math.random() * 5.5;
+    d.len = 12 + Math.random() * 18;
+    d.alpha = 0.18 + Math.random() * 0.22;
+  }
+
+  function makeRain(count) {
+    const target = Math.max(0, Math.round(count));
+    while (rain.length > target) rain.pop();
+    for (let i = rain.length; i < target; i++) {
+      const d = {};
+      resetDrop(d);
+      d.y = Math.random() * H;
+      rain.push(d);
+    }
+  }
+
+  function setRaininess(value) {
+    raininess = Number(value);
+    if (rainOutput) rainOutput.value = `${raininess}%`;
+    makeRain((raininess / 100) * MAX_RAIN);
+    canvas.style.opacity = (0.18 + (raininess / 100) * 0.52).toFixed(2);
+  }
+
+  if (rainInput) {
+    rainInput.addEventListener('input', () => setRaininess(rainInput.value));
+  }
+
+  function applyWindStrength(strength) {
+    rainWind = 0.25 + strength * 0.75;
+    if (treeContainer) {
+      treeContainer.style.setProperty('--wind-rot-a', `${(-0.22 * strength).toFixed(3)}deg`);
+      treeContainer.style.setProperty('--wind-rot-b', `${(0.62 * strength).toFixed(3)}deg`);
+      treeContainer.style.setProperty('--wind-x-a', `${(-2 * strength).toFixed(2)}px`);
+      treeContainer.style.setProperty('--wind-x-b', `${(5 * strength).toFixed(2)}px`);
+      treeContainer.style.setProperty('--wind-glow-scale-a', (1 - 0.005 * strength).toFixed(4));
+      treeContainer.style.setProperty('--wind-glow-scale-b', (1 + 0.015 * strength).toFixed(4));
+    }
+  }
+
+  function tweenWindStrength() {
+    currentWindStrength += (targetWindStrength - currentWindStrength) * 0.12;
+    applyWindStrength(currentWindStrength);
+
+    if (Math.abs(targetWindStrength - currentWindStrength) > 0.003) {
+      windTweenFrame = requestAnimationFrame(tweenWindStrength);
+    } else {
+      currentWindStrength = targetWindStrength;
+      applyWindStrength(currentWindStrength);
+      windTweenFrame = 0;
+    }
+  }
+
+  function setWindiness(value) {
+    windiness = Number(value);
+    targetWindStrength = windiness / 60;
+    if (windOutput) windOutput.value = `${windiness}%`;
+    if (!windTweenFrame) windTweenFrame = requestAnimationFrame(tweenWindStrength);
+  }
+
+  if (windInput) {
+    windInput.addEventListener('input', () => setWindiness(windInput.value));
+  }
+
+  function setSunniness(value, syncControl = false) {
+    sunniness = Number(value);
+    const t = sunniness / 100;
+    if (syncControl && sunInput) sunInput.value = String(Math.round(sunniness));
+    if (sunOutput) sunOutput.value = `${sunniness}%`;
+    if (treeContainer) {
+      treeContainer.style.setProperty('--sun-opacity', (0.03 + t * 0.72).toFixed(2));
+      treeContainer.style.setProperty('--sun-scale', (0.78 + t * 0.45).toFixed(3));
+      treeContainer.style.setProperty('--sun-wash-opacity', (t * 0.2).toFixed(2));
+      treeContainer.style.setProperty('--sun-ray-speed', `${(42 - t * 26).toFixed(1)}s`);
+    }
+    if (metOffice) {
+      metOffice.style.setProperty('--met-sunlight-opacity', (0.03 + t * 0.25).toFixed(2));
+    }
+  }
+
+  if (sunInput) {
+    sunInput.addEventListener('input', () => setSunniness(sunInput.value));
+  }
+
+  function animateSunIntro() {
+    if (sunIntroPlayed) return;
+    sunIntroPlayed = true;
+    const duration = 3000;
+    const target = 55;
+    const start = performance.now();
+
+    function step(now) {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setSunniness(Math.round(target * eased), true);
+      if (t < 1) requestAnimationFrame(step);
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  function spawnSplash(x, y, hit) {
+    for (let i = 0; i < 3; i++) {
+      splashes.push({
+        x, y,
+        vx: (-1.8 + Math.random() * 3.6) + hit.nx * 1.5,
+        vy: -1.2 - Math.random() * 1.6,
+        life: 16 + Math.random() * 10,
+        maxLife: 26,
+      });
+    }
+    if (Math.random() < 0.35) {
+      drips.push({
+        x, y,
+        vx: hit.nx * (0.8 + Math.random() * 0.7),
+        vy: 1.2 + Math.random() * 1.4,
+        life: 32 + Math.random() * 22,
+        maxLife: 54,
+      });
+    }
+  }
+
+  function updateRain() {
+    const elementBoxes = getElementRainBoxes();
+    rain.forEach(d => {
+      const prevX = d.x;
+      const prevY = d.y;
+      d.x += d.vx;
+      d.y += d.vy;
+      const p = toSvgPoint(d.x, d.y);
+      const hit = canopyHit(p.x, p.y);
+      const boxHit = d.vy > 0 ? boxRainHit(prevX, prevY, d, elementBoxes) : null;
+      if (boxHit) {
+        spawnSplash(boxHit.x, boxHit.y, boxHit);
+        resetDrop(d);
+      } else if (hit && d.vy > 0) {
+        spawnSplash(d.x, d.y, hit);
+        resetDrop(d);
+      } else if (d.y > H + 60 || d.x < -80) {
+        resetDrop(d);
+      }
+    });
+
+    for (let i = splashes.length - 1; i >= 0; i--) {
+      const s = splashes[i];
+      s.x += s.vx; s.y += s.vy;
+      s.vy += 0.12;
+      s.life--;
+      if (s.life <= 0) splashes.splice(i, 1);
+    }
+    for (let i = drips.length - 1; i >= 0; i--) {
+      const d = drips[i];
+      d.x += d.vx; d.y += d.vy;
+      d.vy += 0.045;
+      d.life--;
+      if (d.life <= 0) drips.splice(i, 1);
+    }
+  }
+
+  function drawRain() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineCap = 'round';
+
+    rain.forEach(d => {
+      ctx.strokeStyle = `rgba(160,220,255,${d.alpha})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(d.x, d.y);
+      ctx.lineTo(d.x - d.vx * 1.8, d.y - d.len);
+      ctx.stroke();
+    });
+
+    splashes.forEach(s => {
+      const a = Math.max(0, s.life / s.maxLife) * 0.4;
+      ctx.strokeStyle = `rgba(170,235,255,${a})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y);
+      ctx.lineTo(s.x - s.vx * 2.5, s.y - s.vy * 2.5);
+      ctx.stroke();
+    });
+
+    drips.forEach(d => {
+      const a = Math.max(0, d.life / d.maxLife) * 0.42;
+      ctx.fillStyle = `rgba(160,235,255,${a})`;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, 1.4, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+
+  function loop() {
+    updateRain();
+    drawRain();
+    requestAnimationFrame(loop);
+  }
+
+  resizeRain();
+  setWindiness(windiness);
+  setSunniness(0, true);
+  setRaininess(raininess);
+  if (metOffice) {
+    const sunIntroObs = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting)) {
+        animateSunIntro();
+        sunIntroObs.disconnect();
+      }
+    }, { threshold: 0.28 });
+    sunIntroObs.observe(metOffice);
+  }
+  window.addEventListener('resize', () => {
+    resizeRain();
+    setRaininess(raininess);
+  });
+  loop();
 })();
 
 // ─── TRACK CANVAS ─────────────────────────────────────────────────────────
