@@ -1208,6 +1208,22 @@
     width: 1px !important; height: 1px !important;
     opacity: 0 !important; pointer-events: none !important;
   }
+  .cf-recaptcha-note {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    line-height: 1.65;
+    color: rgba(74,96,112,0.95);
+    letter-spacing: 0.03em;
+    margin: -0.85rem 0 -0.75rem;
+  }
+  .cf-recaptcha-note a {
+    color: var(--muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .grecaptcha-badge {
+    visibility: hidden !important;
+  }
 
   .project-meta-links {
     display: flex;
