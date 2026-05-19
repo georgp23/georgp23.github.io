@@ -146,24 +146,30 @@
 
       <ellipse class="tree-canopy-glow" cx="250" cy="320" rx="155" ry="160" fill="url(#canopyGlow)"></ellipse>
       <g id="tree-branches" stroke="url(#branchGrad)">
-        <path class="tree-branch" d="M246 448 C228 432 208 412 188 388" stroke-width="7"/>
-        <path class="tree-branch" d="M188 388 C172 368 158 348 148 328" stroke-width="4.5"/>
-        <path class="tree-branch" d="M244 432 C218 428 192 426 172 422" stroke-width="4"/>
-        <path class="tree-branch" d="M172 422 C152 412 132 398 118 382" stroke-width="3"/>
-        <path class="tree-branch" d="M254 448 C272 432 292 412 312 388" stroke-width="7"/>
-        <path class="tree-branch" d="M312 388 C328 368 342 348 352 328" stroke-width="4.5"/>
-        <path class="tree-branch" d="M256 432 C282 428 308 426 328 422" stroke-width="4"/>
-        <path class="tree-branch" d="M328 422 C348 412 368 398 382 382" stroke-width="3"/>
-        <path class="tree-branch" d="M250 418 C248 388 246 358 244 328" stroke-width="5"/>
-        <path class="tree-branch" d="M244 328 C238 298 232 268 228 242" stroke-width="3.5"/>
-        <path class="tree-branch" d="M250 400 C262 392 276 388 290 384" stroke-width="2.5"/>
-        <path class="tree-branch" d="M250 400 C238 392 224 388 210 384" stroke-width="2.5"/>
-        <path class="tree-branch" d="M148 328 C132 312 118 298 108 282" stroke-width="2.5"/>
-        <path class="tree-branch" d="M352 328 C368 312 382 298 392 282" stroke-width="2.5"/>
+        <g class="tree-wind-group tree-wind-left" data-wind-side="left">
+          <path class="tree-branch" d="M246 448 C228 432 208 412 188 388" stroke-width="7"/>
+          <path class="tree-branch" d="M188 388 C172 368 158 348 148 328" stroke-width="4.5"/>
+          <path class="tree-branch" d="M244 432 C218 428 192 426 172 422" stroke-width="4"/>
+          <path class="tree-branch" d="M172 422 C152 412 132 398 118 382" stroke-width="3"/>
+          <path class="tree-branch" d="M250 400 C238 392 224 388 210 384" stroke-width="2.5"/>
+          <path class="tree-branch" d="M148 328 C132 312 118 298 108 282" stroke-width="2.5"/>
+        </g>
+        <g class="tree-wind-group tree-wind-center" data-wind-side="center">
+          <path class="tree-branch" d="M250 418 C248 388 246 358 244 328" stroke-width="5"/>
+          <path class="tree-branch" d="M244 328 C238 298 232 268 228 242" stroke-width="3.5"/>
+        </g>
+        <g class="tree-wind-group tree-wind-right" data-wind-side="right">
+          <path class="tree-branch" d="M254 448 C272 432 292 412 312 388" stroke-width="7"/>
+          <path class="tree-branch" d="M312 388 C328 368 342 348 352 328" stroke-width="4.5"/>
+          <path class="tree-branch" d="M256 432 C282 428 308 426 328 422" stroke-width="4"/>
+          <path class="tree-branch" d="M328 422 C348 412 368 398 382 382" stroke-width="3"/>
+          <path class="tree-branch" d="M250 400 C262 392 276 388 290 384" stroke-width="2.5"/>
+          <path class="tree-branch" d="M352 328 C368 312 382 298 392 282" stroke-width="2.5"/>
+        </g>
       </g>
 
       <!-- Trunk & roots -->
-      <g id="tree-wood">
+      <g id="tree-wood" class="tree-wind-group tree-wind-trunk" data-wind-side="trunk">
         <path d="M238 575 C232 530 228 485 226 445 C224 418 235 405 250 398 C265 405 276 418 274 445 C272 485 268 530 262 575 Z" fill="url(#trunkGrad)"/>
         <path class="tree-bark-line" d="M248 572 C246 510 244 460 242 420" stroke-width="2"/>
         <path class="tree-bark-line" d="M254 568 C256 500 258 455 260 415" stroke-width="1.5" opacity="0.7"/>

@@ -473,18 +473,36 @@
   .tree-canopy-glow {
     pointer-events: none;
     transform-box: fill-box;
-    transform-origin: center;
+    transform-origin: 250px 420px;
     animation: treeWindGlow var(--wind-duration) cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    animation-delay: -0.45s;
   }
-  #tree-branches {
+  .tree-wind-group {
     transform-box: view-box;
-    transform-origin: 250px 575px;
     animation: treeWind var(--wind-duration) cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+  .tree-wind-left {
+    transform-origin: 235px 560px;
+    animation-delay: 0s;
+  }
+  .tree-wind-center {
+    transform-origin: 250px 575px;
+    animation-delay: -0.55s;
+  }
+  .tree-wind-right {
+    transform-origin: 265px 560px;
+    animation-delay: -1.1s;
+  }
+  .tree-wind-trunk {
+    transform-origin: 250px 598px;
+    animation-delay: -0.28s;
   }
   #leaves-layer {
-    transform-box: view-box;
-    transform-origin: 250px 575px;
-    animation: treeWind var(--wind-duration) cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    pointer-events: none;
+  }
+  #leaves-layer .leaf,
+  #leaves-layer .leaf-hit-zone {
+    pointer-events: all;
   }
   .tree-branch {
     fill: none;
@@ -540,8 +558,7 @@
     to { transform: rotate(360deg); }
   }
   @media (prefers-reduced-motion: reduce) {
-    #leaves-layer,
-    #tree-branches,
+    .tree-wind-group,
     .tree-canopy-glow,
     .tree-sun::before {
       animation: none;

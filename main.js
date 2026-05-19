@@ -75,6 +75,21 @@ revEls.forEach(el => obs.observe(el));
   const layer = document.getElementById('leaves-layer');
   const metContent = document.querySelector('.met-content');
   const rainControls = document.querySelector('.rain-controls');
+  const windLeafGroups = {};
+  ['left', 'center', 'right'].forEach(side => {
+    const g = document.createElementNS(NS, 'g');
+    g.classList.add('tree-wind-group', `tree-wind-${side}`);
+    g.dataset.windSide = side;
+    layer.appendChild(g);
+    windLeafGroups[side] = g;
+  });
+
+  function windSideFor(x) {
+    if (x < 215) return 'left';
+    if (x > 285) return 'right';
+    return 'center';
+  }
+
   const GLOW_RADIUS = 18;
   const CELL_SIZE = GLOW_RADIUS;
   const SHADES = ['#1a4f24', '#226830', '#2a7a38', '#1e5c2c', '#328f44', '#174020'];
@@ -129,7 +144,7 @@ revEls.forEach(el => obs.observe(el));
 
     g.appendChild(body);
     g.appendChild(vein);
-    layer.appendChild(g);
+    windLeafGroups[windSideFor(x)].appendChild(g);
     leafRegistry.push({ el: g, x, y });
     if (clusterIndex >= 0) clusterPoints[clusterIndex].push({ x, y });
   }
@@ -173,7 +188,7 @@ revEls.forEach(el => obs.observe(el));
     const polygon = document.createElementNS(NS, 'polygon');
     polygon.classList.add('leaf-hit-zone');
     polygon.setAttribute('points', hull.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' '));
-    layer.appendChild(polygon);
+    windLeafGroups[windSideFor(cluster.cx)].appendChild(polygon);
     hitZones.push(hull);
   }
 
@@ -395,7 +410,8 @@ revEls.forEach(el => obs.observe(el));
   let manualSunOverride = false;
   let sunScrollFrame = 0;
   let rainWind = 1;
-  let currentWindStrength = windiness / 60;
+  const WIND_STRENGTH_AT_FULL = 30; // 100% windiness → 2× previous peak (was /60)
+  let currentWindStrength = windiness / WIND_STRENGTH_AT_FULL;
   let targetWindStrength = currentWindStrength;
   let windTweenFrame = 0;
   const MAX_RAIN = 125;
@@ -521,14 +537,24 @@ revEls.forEach(el => obs.observe(el));
 
   function applyWindStrength(strength) {
     rainWind = 0.25 + strength * 0.75;
-    if (treeContainer) {
-      treeContainer.style.setProperty('--wind-rot-a', `${(-0.22 * strength).toFixed(3)}deg`);
-      treeContainer.style.setProperty('--wind-rot-b', `${(0.62 * strength).toFixed(3)}deg`);
-      treeContainer.style.setProperty('--wind-x-a', `${(-2 * strength).toFixed(2)}px`);
-      treeContainer.style.setProperty('--wind-x-b', `${(5 * strength).toFixed(2)}px`);
-      treeContainer.style.setProperty('--wind-glow-scale-a', (1 - 0.005 * strength).toFixed(4));
-      treeContainer.style.setProperty('--wind-glow-scale-b', (1 + 0.015 * strength).toFixed(4));
-    }
+    if (!treeContainer) return;
+
+    const ampBySide = { left: 1.14, center: 1, right: 1.14, trunk: 0.55 };
+    treeContainer.style.setProperty('--wind-rot-a', `${(-0.22 * strength).toFixed(3)}deg`);
+    treeContainer.style.setProperty('--wind-rot-b', `${(0.62 * strength).toFixed(3)}deg`);
+    treeContainer.style.setProperty('--wind-x-a', `${(-2 * strength).toFixed(2)}px`);
+    treeContainer.style.setProperty('--wind-x-b', `${(5 * strength).toFixed(2)}px`);
+    treeContainer.style.setProperty('--wind-glow-scale-a', (1 - 0.005 * strength).toFixed(4));
+    treeContainer.style.setProperty('--wind-glow-scale-b', (1 + 0.015 * strength).toFixed(4));
+
+    treeContainer.querySelectorAll('.tree-wind-group').forEach(group => {
+      const amp = ampBySide[group.dataset.windSide] || 1;
+      const s = strength * amp;
+      group.style.setProperty('--wind-rot-a', `${(-0.22 * s).toFixed(3)}deg`);
+      group.style.setProperty('--wind-rot-b', `${(0.62 * s).toFixed(3)}deg`);
+      group.style.setProperty('--wind-x-a', `${(-2 * s).toFixed(2)}px`);
+      group.style.setProperty('--wind-x-b', `${(5 * s).toFixed(2)}px`);
+    });
   }
 
   function tweenWindStrength() {
@@ -546,7 +572,7 @@ revEls.forEach(el => obs.observe(el));
 
   function setWindiness(value) {
     windiness = Number(value);
-    targetWindStrength = windiness / 60;
+    targetWindStrength = windiness / WIND_STRENGTH_AT_FULL;
     if (windOutput) windOutput.value = `${windiness}%`;
     if (!windTweenFrame) windTweenFrame = requestAnimationFrame(tweenWindStrength);
   }
