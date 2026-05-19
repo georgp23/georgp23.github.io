@@ -74,6 +74,7 @@ revEls.forEach(el => obs.observe(el));
   const svg = document.getElementById('tree-svg');
   const layer = document.getElementById('leaves-layer');
   const metContent = document.querySelector('.met-content');
+  const rainControls = document.querySelector('.rain-controls');
   const GLOW_RADIUS = 18;
   const CELL_SIZE = GLOW_RADIUS;
   const SHADES = ['#1a4f24', '#226830', '#2a7a38', '#1e5c2c', '#328f44', '#174020'];
@@ -352,18 +353,20 @@ revEls.forEach(el => obs.observe(el));
   });
   layer.addEventListener('mouseleave', clearGlow);
 
-  if (metContent) {
-    metContent.addEventListener('pointermove', e => {
-      const pt = svgPointFromEvent(e);
-      if (pointInAnyHitZone(pt)) {
-        activeLeaf = null;
-        scheduleGlow(pt.x, pt.y);
-      } else {
-        clearGlow();
-      }
-    });
-    metContent.addEventListener('mouseleave', clearGlow);
+  function routeOverlayPointer(e) {
+    const pt = svgPointFromEvent(e);
+    if (pointInAnyHitZone(pt)) {
+      activeLeaf = null;
+      scheduleGlow(pt.x, pt.y);
+    } else {
+      clearGlow();
+    }
   }
+
+  [metContent, rainControls].filter(Boolean).forEach(el => {
+    el.addEventListener('pointermove', routeOverlayPointer);
+    el.addEventListener('mouseleave', clearGlow);
+  });
 
   svg.addEventListener('mouseleave', clearGlow);
 })();
@@ -1181,8 +1184,9 @@ for (let i = 0; i < 6; i++) {
     ctx.fillStyle = '#080d12';
     ctx.fillRect(0, 0, CW, CH);
 
-    const padX = 28;
-    const padTop = 50;
+    const isMobile = CW < 560;
+    const padX = isMobile ? 18 : 28;
+    const padTop = isMobile ? 78 : 50;
     const padBot = 24;
     const rowAreaH = CH - padTop - padBot;
     const rowH = rowAreaH / drinks.length;
@@ -1194,7 +1198,7 @@ for (let i = 0; i < 6; i++) {
     ctx.font = '10px "Space Mono", monospace';
     ctx.fillStyle = 'rgba(0,255,200,0.55)';
     ctx.textAlign = 'right';
-    ctx.fillText(`FEEDBACK COLLECTED · ${totalFb.toString().padStart(3, '0')}`, CW - padX, 24);
+    ctx.fillText(`FEEDBACK COLLECTED · ${totalFb.toString().padStart(3, '0')}`, CW - padX, isMobile ? 56 : 24);
 
     // grid vertical lines at 0 / 0.25 / 0.5 / 0.75 / 1
     ctx.strokeStyle = 'rgba(255,255,255,0.05)';

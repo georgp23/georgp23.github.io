@@ -1253,3 +1253,268 @@
   /* SCROLL REVEAL */
   .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
   .reveal.visible { opacity: 1; transform: none; }
+
+  /* ─── MOBILE POLISH ─────────────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    section {
+      padding: 6rem 1.5rem;
+    }
+
+    #hero {
+      min-height: 100svh;
+      padding: 7rem 1.5rem 4rem;
+      justify-content: center;
+    }
+
+    .hero-name {
+      font-size: clamp(3.4rem, 18vw, 5.8rem);
+      max-width: 100%;
+    }
+
+    .hero-sub {
+      max-width: 100%;
+      font-size: 0.92rem;
+    }
+
+    .hero-cta {
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2.25rem;
+    }
+
+    .btn-primary,
+    .btn-ghost {
+      padding: 0.78rem 1.35rem;
+    }
+
+    #met-office {
+      min-height: 920px;
+      padding-top: 6.5rem;
+      padding-bottom: 20rem;
+    }
+
+    .met-content {
+      max-width: none;
+      padding-left: 0;
+    }
+
+    .met-badge {
+      max-width: 100%;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.62rem;
+      line-height: 1.55;
+      letter-spacing: 0.14em;
+    }
+
+    .tree-container {
+      width: min(980px, 260vw);
+      height: 100%;
+      top: 0;
+      bottom: 0;
+    }
+
+    .tree-sun {
+      top: 10%;
+      right: 24%;
+      width: clamp(110px, 34vw, 180px);
+    }
+
+    .rain-controls {
+      left: calc(50% + 50vw - min(170px, calc(100vw - 3rem)) - 1.5rem);
+      right: auto;
+      top: auto;
+      bottom: 1.5rem;
+      width: min(170px, calc(100vw - 3rem));
+      transform: none;
+    }
+
+    .racing-header {
+      align-items: flex-start;
+      margin-bottom: 2.5rem;
+    }
+
+    .racing-desc {
+      max-width: none;
+    }
+
+    .track-wrap {
+      height: 240px;
+      margin-bottom: 2rem;
+    }
+
+    .racing-stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-card {
+      padding: 1.1rem;
+    }
+
+    .stat-num {
+      font-size: 2.15rem;
+    }
+
+    .caffeine-wrap {
+      height: 240px;
+    }
+
+    .collision-wrap {
+      height: 310px;
+    }
+
+    .collision-caption,
+    .caffeine-caption {
+      font-size: 0.56rem;
+      letter-spacing: 0.14em;
+      left: 1rem;
+      right: 1rem;
+    }
+
+    .collision-controls {
+      left: 1rem;
+      right: 1rem;
+      bottom: 1.25rem;
+      width: auto;
+    }
+
+    .collision-legend {
+      display: none;
+    }
+
+    .tech-tags {
+      gap: 0.55rem;
+    }
+
+    .tech-tag {
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      padding: 0.35rem 0.7rem;
+    }
+
+    #about {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .skills-grid {
+      grid-template-columns: 1fr;
+      margin-top: 2rem;
+    }
+
+    .timeline {
+      padding-left: 1.5rem;
+    }
+
+    .t-dot {
+      left: -1.875rem;
+    }
+
+    .cert-sky-bg {
+      height: 360px;
+    }
+
+    .cert-telescope {
+      max-width: 280px;
+    }
+
+    #contact {
+      padding: 6rem 1.5rem;
+    }
+
+    .contact-form {
+      margin-bottom: 3rem;
+    }
+
+    .cf-actions {
+      align-items: stretch;
+      gap: 1rem;
+    }
+
+    .cf-submit {
+      width: 100%;
+    }
+
+    footer {
+      flex-direction: column;
+      gap: 0.75rem;
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 560px) {
+    section {
+      padding: 5rem 1rem;
+    }
+
+    .section-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+    }
+
+    .section-title {
+      font-size: clamp(2.6rem, 14vw, 4rem);
+    }
+
+    #hero {
+      padding-inline: 1rem;
+    }
+
+    .hero-cta {
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+    }
+
+    .btn-primary,
+    .btn-ghost {
+      text-align: center;
+    }
+
+    #met-office {
+      min-height: 900px;
+      padding-bottom: 18rem;
+    }
+
+    .tree-container {
+      width: 900px;
+      height: 100%;
+      top: 0;
+      bottom: 0;
+    }
+
+    .rain-controls {
+      left: calc(50% + 50vw - min(170px, calc(100vw - 2rem)) - 1rem);
+      bottom: 1rem;
+      width: min(170px, calc(100vw - 2rem));
+    }
+
+    .racing-stats {
+      grid-template-columns: 1fr;
+    }
+
+    .track-wrap,
+    .caffeine-wrap {
+      height: 220px;
+    }
+
+    .collision-wrap {
+      height: 300px;
+    }
+
+    .project-card,
+    .feature-card,
+    .cert-card {
+      padding: 1.1rem;
+    }
+
+    .cert-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-big {
+      font-size: clamp(3rem, 18vw, 4.8rem);
+    }
+  }
