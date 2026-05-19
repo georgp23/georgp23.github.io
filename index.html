@@ -265,6 +265,13 @@
 
   <div class="collision-wrap reveal">
     <div class="collision-caption">// Impact Simulation · Top-Down View</div>
+    <button type="button" class="collision-reset" id="collision-reset" aria-label="Reset collision simulation">
+      <svg class="collision-reset-icon" viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M 10.36 13.95 A 6 6 0 1 0 16.52 10.02" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M 17.79 12.74 L 16.52 10.02 L 18.98 8.30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
     <canvas id="collision-canvas"></canvas>
     <div class="collision-controls" aria-label="Collision simulation controls">
       <label class="collision-control-label" for="vehicle-a-speed">

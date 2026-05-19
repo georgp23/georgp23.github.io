@@ -890,6 +890,7 @@ for (let i = 0; i < 6; i++) {
   const ctx = canvas.getContext('2d');
   const speedInput = document.getElementById('vehicle-a-speed');
   const speedOutput = document.getElementById('vehicle-a-speed-value');
+  const resetBtn = document.getElementById('collision-reset');
   let CW = 0, CH = 0;
 
   function resizeCollision() {
@@ -936,6 +937,8 @@ for (let i = 0; i < 6; i++) {
     impactDone = false;
     syncVehicleASpeed();
   }
+
+  if (resetBtn) resetBtn.addEventListener('click', reset);
 
   function drawRoad() {
     ctx.fillStyle = '#080d12';
