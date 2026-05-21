@@ -1431,7 +1431,7 @@ if (slContainer) {
   function updateViewportHeight() {
     const active = slides[index];
     if (!active) return;
-    viewport.style.height = `${active.offsetHeight}px`;
+    viewport.style.height = `${active.scrollHeight}px`;
   }
 
   function scheduleHeightUpdate() {
@@ -1440,6 +1440,10 @@ if (slContainer) {
       updateViewportHeight();
       window.dispatchEvent(new Event('resize'));
     }, reduceMotion ? 0 : 480);
+  }
+
+  function scrollSectionToTop() {
+    section.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
   }
 
   function goTo(nextIndex, updateHash) {
@@ -1482,8 +1486,14 @@ if (slContainer) {
     if (idx >= 0 && idx !== index) goTo(idx, false);
   }
 
-  prevBtn?.addEventListener('click', () => goTo(index - 1));
-  nextBtn?.addEventListener('click', () => goTo(index + 1));
+  prevBtn?.addEventListener('click', () => {
+    goTo(index - 1);
+    scrollSectionToTop();
+  });
+  nextBtn?.addEventListener('click', () => {
+    goTo(index + 1);
+    scrollSectionToTop();
+  });
   dots.forEach(dot => {
     dot.addEventListener('click', () => {
       const target = Number(dot.dataset.slide);
@@ -1502,7 +1512,16 @@ if (slContainer) {
   });
 
   window.addEventListener('hashchange', slideFromHash);
-  window.addEventListener('resize', updateViewportHeight);
+  window.addEventListener('resize', scheduleHeightUpdate);
+
+  if (typeof ResizeObserver !== 'undefined') {
+    const ro = new ResizeObserver(scheduleHeightUpdate);
+    slides.forEach(slide => ro.observe(slide));
+  }
+
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(scheduleHeightUpdate);
+  }
 
   function openFromNav(id, smoothScroll) {
     const idx = id === 'projects' ? 0 : slideIds.indexOf(id);

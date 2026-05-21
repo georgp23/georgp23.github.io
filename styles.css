@@ -721,7 +721,7 @@
     flex: 0 0 100%;
     min-width: 100%;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
   }
   .carousel-arrow {
     flex-shrink: 0;
@@ -891,6 +891,10 @@
 
   /* TECH TAGS */
   .tech-tags { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+  #projects .tech-tags.reveal {
+    opacity: 1;
+    transform: none;
+  }
   .tech-tag {
     font-family: 'Space Mono', monospace;
     font-size: 0.7rem; letter-spacing: 0.1em;
