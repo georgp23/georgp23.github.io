@@ -750,6 +750,9 @@ revEls.forEach(el => obs.observe(el));
 
 // ─── TRACK CANVAS ─────────────────────────────────────────────────────────
 const canvas = document.getElementById('track-canvas');
+if (!canvas) {
+  // track section not on page
+} else {
 const ctx    = canvas.getContext('2d');
 let W, H;
 
@@ -879,16 +882,19 @@ animTrack();
 
 // ─── SPEED LINES ──────────────────────────────────────────────────────────
 const slContainer = document.getElementById('speedLines');
-for (let i = 0; i < 6; i++) {
-  const line = document.createElement('div');
-  line.className = 'speed-line';
-  const top  = 10 + Math.random() * 80;
-  const w    = 80 + Math.random() * 200;
-  const delay= Math.random() * 3;
-  const dur  = 1 + Math.random() * 1.2;
-  line.style.cssText = `top:${top}%; width:${w}px; animation-delay:${delay}s; animation-duration:${dur}s;`;
-  slContainer.appendChild(line);
+if (slContainer) {
+  for (let i = 0; i < 6; i++) {
+    const line = document.createElement('div');
+    line.className = 'speed-line';
+    const top  = 10 + Math.random() * 80;
+    const w    = 80 + Math.random() * 200;
+    const delay= Math.random() * 3;
+    const dur  = 1 + Math.random() * 1.2;
+    line.style.cssText = `top:${top}%; width:${w}px; animation-delay:${delay}s; animation-duration:${dur}s;`;
+    slContainer.appendChild(line);
+  }
 }
+} // end track canvas guard
 
 // ─── COLLISION SIMULATION ─────────────────────────────────────────────────
 (function initCollisionAnim() {
@@ -1399,4 +1405,128 @@ for (let i = 0; i < 6; i++) {
       btn.disabled = false;
     }
   });
+})();
+
+// ─── ML PROJECTS CAROUSEL ─────────────────────────────────────────────────
+(function initProjectCarousel() {
+  const section = document.getElementById('projects');
+  const track = document.getElementById('project-carousel-track');
+  const viewport = document.getElementById('project-carousel-viewport');
+  if (!section || !track || !viewport) return;
+
+  const slides = Array.from(track.querySelectorAll('.carousel-slide'));
+  const dots = Array.from(section.querySelectorAll('.carousel-dot'));
+  const prevBtn = section.querySelector('.carousel-prev');
+  const nextBtn = section.querySelector('.carousel-next');
+  const statusCurrent = section.querySelector('.carousel-status-current');
+  const slideIds = slides.map(s => s.id);
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let index = 0;
+  let resizeTimer = 0;
+
+  function clampIndex(i) {
+    return (i + slides.length) % slides.length;
+  }
+
+  function updateViewportHeight() {
+    const active = slides[index];
+    if (!active) return;
+    viewport.style.height = `${active.offsetHeight}px`;
+  }
+
+  function scheduleHeightUpdate() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      updateViewportHeight();
+      window.dispatchEvent(new Event('resize'));
+    }, reduceMotion ? 0 : 480);
+  }
+
+  function goTo(nextIndex, updateHash) {
+    index = clampIndex(nextIndex);
+    const theme = slides[index].dataset.theme || 'racing';
+    track.style.transform = `translateX(-${index * 100}%)`;
+    section.dataset.activeTheme = theme;
+
+    slides.forEach((slide, i) => {
+      const active = i === index;
+      slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+    });
+
+    dots.forEach((dot, i) => {
+      const active = i === index;
+      dot.classList.toggle('is-active', active);
+      dot.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+
+    if (statusCurrent) statusCurrent.textContent = String(index + 1);
+
+    if (updateHash !== false) {
+      const id = slideIds[index];
+      if (id && location.hash !== `#${id}`) {
+        history.replaceState(null, '', `#${id}`);
+      }
+    }
+
+    scheduleHeightUpdate();
+  }
+
+  function slideFromHash() {
+    const hash = location.hash.slice(1);
+    if (!hash) return;
+    if (hash === 'projects') {
+      if (index !== 0) goTo(0, false);
+      return;
+    }
+    const idx = slideIds.indexOf(hash);
+    if (idx >= 0 && idx !== index) goTo(idx, false);
+  }
+
+  prevBtn?.addEventListener('click', () => goTo(index - 1));
+  nextBtn?.addEventListener('click', () => goTo(index + 1));
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const target = Number(dot.dataset.slide);
+      if (!Number.isNaN(target)) goTo(target);
+    });
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!section.contains(document.activeElement) && document.activeElement !== document.body) {
+      const rect = section.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight * 0.85 && rect.bottom > window.innerHeight * 0.15;
+      if (!inView) return;
+    }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(index - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); goTo(index + 1); }
+  });
+
+  window.addEventListener('hashchange', slideFromHash);
+  window.addEventListener('resize', updateViewportHeight);
+
+  function openFromNav(id, smoothScroll) {
+    const idx = id === 'projects' ? 0 : slideIds.indexOf(id);
+    if (idx < 0) return;
+    goTo(idx);
+    if (smoothScroll) {
+      section.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    }
+  }
+
+  document.querySelectorAll(
+    'a[href="#projects"], a[href="#racing"], a[href="#collisions"], a[href="#caffeine"]'
+  ).forEach(link => {
+    link.addEventListener('click', e => {
+      const id = link.getAttribute('href')?.slice(1);
+      if (!id) return;
+      const idx = id === 'projects' ? 0 : slideIds.indexOf(id);
+      if (idx < 0) return;
+      e.preventDefault();
+      openFromNav(id, true);
+    });
+  });
+
+  slideFromHash();
+  goTo(index, false);
+  requestAnimationFrame(updateViewportHeight);
 })();
