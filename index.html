@@ -20,7 +20,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23080c10'/%3E%3Crect x='5' y='5' width='54' height='54' rx='10' fill='%230d1117' stroke='%2300ffc8' stroke-width='3'/%3E%3Ctext x='32' y='34' text-anchor='middle' dominant-baseline='middle' font-family='Courier New, monospace' font-size='39' font-weight='400' letter-spacing='-5' fill='%2300ffc8'%3EGP%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
 
 <script src="https://www.google.com/recaptcha/api.js?render=6Lcvpu8sAAAAAGnxYjrUDtwPxqSLGoSo41uM73bs" async defer></script>
@@ -77,6 +77,67 @@
     <a class="float-tag" href="#about"><span>06</span>About</a>
     <a class="float-tag" href="#certifications"><span>07</span>Certs</a>
     <a class="float-tag" href="#contact"><span>08</span>Contact</a>
+  </div>
+
+  <div class="this-way-wrap">
+    <svg viewBox="0 0 700 548"
+         xmlns="http://www.w3.org/2000/svg"
+         aria-label="Neon sign reading This Way with a glowing arrow pointing up">
+      <defs>
+        <filter id="neon" x="-70%" y="-70%" width="240%" height="240%"
+                color-interpolation-filters="sRGB">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="22" result="far"/>
+          <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="mid"/>
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="near"/>
+          <feComponentTransfer in="far" result="farA">
+            <feFuncA type="linear" slope="0.32"/>
+          </feComponentTransfer>
+          <feComponentTransfer in="mid" result="midA">
+            <feFuncA type="linear" slope="0.60"/>
+          </feComponentTransfer>
+          <feMerge>
+            <feMergeNode in="farA"/>
+            <feMergeNode in="farA"/>
+            <feMergeNode in="midA"/>
+            <feMergeNode in="near"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+
+      <g filter="url(#neon)">
+        <text x="212" y="188"
+              font-family="Pacifico, cursive"
+              font-size="108"
+              text-anchor="middle"
+              fill="white">This</text>
+
+        <text x="212" y="336"
+              font-family="Pacifico, cursive"
+              font-size="108"
+              text-anchor="middle"
+              fill="white">Way</text>
+
+        <path d="M 366 262 H 462 A 50 50 0 0 1 512 312 V 362"
+              fill="none"
+              stroke="white"
+              stroke-width="3.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+
+        <path d="M 512 362 L 489 344"
+              fill="none"
+              stroke="white"
+              stroke-width="3.5"
+              stroke-linecap="round"/>
+
+        <path d="M 512 362 L 535 344"
+              fill="none"
+              stroke="white"
+              stroke-width="3.5"
+              stroke-linecap="round"/>
+      </g>
+    </svg>
   </div>
 </section>
 

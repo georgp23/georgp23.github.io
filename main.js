@@ -17,6 +17,13 @@ const obs = new IntersectionObserver(entries => {
 }, { threshold: 0.12 });
 revEls.forEach(el => obs.observe(el));
 
+// ─── THIS WAY SIGN ─────────────────────────────────────────────────────────
+(function initThisWaySign() {
+  const sign = document.querySelector('.this-way-wrap');
+  if (!sign || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  sign.style.willChange = 'opacity, transform';
+})();
+
 // ─── CERTIFICATION TELESCOPE SCROLL ─────────────────────────────────────────
 (function initCertTelescopeScroll() {
   const section = document.getElementById('certifications');
