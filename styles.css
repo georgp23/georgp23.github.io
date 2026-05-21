@@ -595,7 +595,12 @@
     max-width: 400px;
     font-size: 0.95rem; color: var(--muted);
     line-height: 1.7;
+    border: 2px dashed var(--racing-yellow);
+    padding: 1rem 1.1rem;
+    border-radius: 1rem;
+    color: rgb(208, 208, 208);
   }
+
 
   /* TRACK VISUALIZER */
   .track-wrap {
