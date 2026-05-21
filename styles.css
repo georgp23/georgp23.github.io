@@ -16,9 +16,14 @@
     --racing-red: #ff2233;
     --racing-orange: #ff8c00;
     --racing-yellow: #ffe033;
+    --nav-height: 4.25rem;
   }
 
   html { scroll-behavior: smooth; }
+
+  .sign-char {
+    color: var(--racing-red);
+  }
 
   body {
     background: var(--bg);
@@ -100,6 +105,7 @@
   nav.open .nav-toggle span:nth-child(3) { top: 17px; transform: rotate(-45deg); }
 
   @media (max-width: 900px) {
+    :root { --nav-height: 3.5rem; }
     nav { padding: 1rem 1.5rem; }
     .nav-toggle { display: block; }
     .nav-links {
@@ -623,23 +629,184 @@
     }
   }
 
-  /* ─── RACING AI ─────────────────────────────────────────────────────── */
-  #racing {
+  /* ─── ML PROJECTS CAROUSEL ──────────────────────────────────────────── */
+  #projects {
+    padding-bottom: 6rem;
+    transition: background 0.55s ease;
+  }
+  #projects[data-active-theme="racing"] {
     background:
       radial-gradient(ellipse 55% 60% at 80% 20%, rgba(255,140,0,0.06), transparent 65%),
       radial-gradient(ellipse 50% 60% at 15% 85%, rgba(255,224,51,0.05), transparent 65%),
       var(--bg2);
-    overflow: hidden;
-    padding-bottom: 6rem;
   }
+  #projects[data-active-theme="collisions"] {
+    background:
+      radial-gradient(ellipse 60% 70% at 85% 20%, rgba(0,255,200,0.08), transparent 60%),
+      linear-gradient(180deg, var(--bg2), var(--bg));
+  }
+  #projects[data-active-theme="caffeine"] {
+    background:
+      radial-gradient(ellipse 60% 70% at 12% 18%, rgba(255,140,0,0.10), transparent 60%),
+      radial-gradient(ellipse 55% 65% at 88% 80%, rgba(0,255,200,0.06), transparent 60%),
+      linear-gradient(180deg, var(--bg), var(--bg2));
+  }
+  .carousel-header {
+    margin-bottom: 1.25rem;
+  }
+  .carousel-nav {
+    margin-bottom: 2.5rem;
+  }
+  .carousel-controls-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+  .carousel-status {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin: 0;
+  }
+  .carousel-status-current { color: var(--cyan); }
+  .carousel-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    padding: 0.85rem 0;
+    margin: 0 -3rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+  .carousel-nav.is-stuck {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    margin: 0;
+  }
+  .carousel-nav-placeholder {
+    display: none;
+    pointer-events: none;
+  }
+  .carousel-nav-placeholder.is-active {
+    display: block;
+  }
+  #projects .carousel-slide .section-label {
+    color: var(--racing-orange);
+  }
+  .carousel-shell {
+    position: relative;
+  }
+  .carousel-viewport {
+    overflow: hidden;
+    position: relative;
+    transition: height 0.45s ease;
+  }
+  .carousel-track {
+    display: flex;
+    align-items: flex-start;
+    transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #projects,
+    .carousel-viewport,
+    .carousel-track {
+      transition: none;
+    }
+  }
+  .carousel-slide {
+    flex: 0 0 100%;
+    min-width: 100%;
+    position: relative;
+    overflow: visible;
+  }
+  .carousel-arrow {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid rgba(0,255,200,0.22);
+    background: rgba(0,255,200,0.04);
+    color: var(--cyan);
+    cursor: pointer;
+    transition: border-color 0.25s, background 0.25s, color 0.25s, transform 0.25s;
+  }
+  .carousel-arrow svg {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+  .carousel-arrow:hover {
+    border-color: var(--cyan);
+    background: var(--cyan-dim);
+    transform: scale(1.05);
+  }
+  .carousel-arrow:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 3px;
+  }
+  .carousel-dots {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.55rem;
+    max-width: min(100%, 520px);
+  }
+  .carousel-dot {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.85rem;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: border-color 0.25s, color 0.25s, background 0.25s;
+  }
+  .carousel-dot.is-active {
+    border-color: rgba(0,255,200,0.45);
+    color: var(--cyan);
+    background: rgba(0,255,200,0.08);
+  }
+  #projects[data-active-theme="racing"] .carousel-dot.is-active {
+    border-color: rgba(255,224,51,0.45);
+    color: var(--racing-yellow);
+    background: rgba(255,224,51,0.08);
+  }
+  #projects[data-active-theme="caffeine"] .carousel-dot.is-active {
+    border-color: rgba(255,140,0,0.45);
+    color: var(--racing-orange);
+    background: rgba(255,140,0,0.08);
+  }
+  .carousel-dot:hover:not(.is-active) {
+    border-color: rgba(255,255,255,0.28);
+    color: #c8d8e4;
+  }
+  .racing-subtitle {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  /* ─── RACING AI (carousel slide) ────────────────────────────────────── */
   .racing-header {
     display: flex; align-items: flex-end; justify-content: space-between;
     flex-wrap: wrap; gap: 2rem;
     margin-bottom: 4rem;
   }
   .racing-title-wrap .section-title {
+    color: var(--white);
+    text-shadow: none;
+  }
+  .racing-title-wrap .racing-subtitle {
     color: var(--racing-yellow);
-    text-shadow: 0 0 40px rgba(255,224,51,0.2);
   }
   /* checkered flag accent */
   .checkered {
@@ -731,6 +898,10 @@
 
   /* TECH TAGS */
   .tech-tags { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+  #projects .tech-tags.reveal {
+    opacity: 1;
+    transform: none;
+  }
   .tech-tag {
     font-family: 'Space Mono', monospace;
     font-size: 0.7rem; letter-spacing: 0.1em;
@@ -754,12 +925,7 @@
     background: var(--cyan-dim);
   }
 
-  /* ─── COLLISIONS ML PROJECT ─────────────────────────────────────────── */
-  #collisions {
-    background:
-      radial-gradient(ellipse 60% 70% at 85% 20%, rgba(0,255,200,0.08), transparent 60%),
-      linear-gradient(180deg, var(--bg2), var(--bg));
-  }
+  /* ─── COLLISIONS ML PROJECT (carousel slide) ────────────────────────── */
   .collision-wrap {
     position: relative;
     width: 100%;
@@ -909,12 +1075,6 @@
     z-index: 2;
     pointer-events: none;
     opacity: 0.9;
-  }
-  #caffeine {
-    background:
-      radial-gradient(ellipse 60% 70% at 12% 18%, rgba(255,140,0,0.10), transparent 60%),
-      radial-gradient(ellipse 55% 65% at 88% 80%, rgba(0,255,200,0.06), transparent 60%),
-      linear-gradient(180deg, var(--bg), var(--bg2));
   }
   #responsible-ai {
     background:
@@ -1468,6 +1628,24 @@
       transform: none;
     }
 
+    .carousel-nav {
+      gap: 0.75rem;
+      margin: 0 -1.5rem;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    .carousel-arrow {
+      width: 2.6rem;
+      height: 2.6rem;
+    }
+    .carousel-dot {
+      font-size: 0.58rem;
+      padding: 0.42rem 0.65rem;
+    }
+    .carousel-nav {
+      margin-bottom: 2rem;
+    }
+
     .racing-header {
       align-items: flex-start;
       margin-bottom: 2.5rem;
@@ -1591,6 +1769,12 @@
   @media (max-width: 560px) {
     section {
       padding: 5rem 1rem;
+    }
+
+    .carousel-nav {
+      margin: 0 -1rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
     }
 
     .section-label {

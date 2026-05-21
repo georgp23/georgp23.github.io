@@ -17,6 +17,81 @@ const obs = new IntersectionObserver(entries => {
 }, { threshold: 0.12 });
 revEls.forEach(el => obs.observe(el));
 
+// ─── RED + / − IN PAGE TEXT ────────────────────────────────────────────────
+(function highlightPlusMinus() {
+  const skipTags = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION']);
+
+  function shouldHighlight(ch, text, index) {
+    if (ch === '+') return true;
+    const beforeWord = index > 0 && /\w/.test(text[index - 1]);
+    const afterWord = index < text.length - 1 && /\w/.test(text[index + 1]);
+    return !(beforeWord && afterWord);
+  }
+
+  function hasHighlightableSign(text) {
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if ((ch === '+' || ch === '-' || ch === '−') && shouldHighlight(ch, text, i)) return true;
+    }
+    return false;
+  }
+
+  function wrapTextNode(node) {
+    const text = node.nodeValue;
+    if (!hasHighlightableSign(text)) return;
+    const frag = document.createDocumentFragment();
+    let last = 0;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if ((ch === '+' || ch === '-' || ch === '−') && shouldHighlight(ch, text, i)) {
+        if (i > last) frag.appendChild(document.createTextNode(text.slice(last, i)));
+        const span = document.createElement('span');
+        span.className = 'sign-char';
+        span.textContent = ch;
+        frag.appendChild(span);
+        last = i + 1;
+      }
+    }
+    if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+    node.parentNode.replaceChild(frag, node);
+  }
+
+  function wrapPlusOnly(node) {
+    const text = node.nodeValue;
+    const index = text.indexOf('+');
+    if (index === -1) return;
+    const frag = document.createDocumentFragment();
+    if (index > 0) frag.appendChild(document.createTextNode(text.slice(0, index)));
+    const span = document.createElement('span');
+    span.className = 'sign-char';
+    span.textContent = '+';
+    frag.appendChild(span);
+    if (index + 1 < text.length) frag.appendChild(document.createTextNode(text.slice(index + 1)));
+    node.parentNode.replaceChild(frag, node);
+  }
+
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const parent = node.parentElement;
+      if (!parent || skipTags.has(parent.tagName)) return NodeFilter.FILTER_REJECT;
+      if (parent.closest('.sign-char, #about, #met-office, [data-no-sign-highlight]')) return NodeFilter.FILTER_REJECT;
+      return hasHighlightableSign(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    }
+  });
+
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(wrapTextNode);
+
+  const titles = document.querySelectorAll('#about .t-title');
+  for (const title of titles) {
+    if (!title.textContent.includes('LLM + ML')) continue;
+    const titleWalker = document.createTreeWalker(title, NodeFilter.SHOW_TEXT);
+    while (titleWalker.nextNode()) wrapPlusOnly(titleWalker.currentNode);
+    break;
+  }
+})();
+
 // ─── THIS WAY SIGN ─────────────────────────────────────────────────────────
 (function initThisWaySign() {
   const sign = document.querySelector('.this-way-wrap');
@@ -750,6 +825,9 @@ revEls.forEach(el => obs.observe(el));
 
 // ─── TRACK CANVAS ─────────────────────────────────────────────────────────
 const canvas = document.getElementById('track-canvas');
+if (!canvas) {
+  // track section not on page
+} else {
 const ctx    = canvas.getContext('2d');
 let W, H;
 
@@ -879,16 +957,19 @@ animTrack();
 
 // ─── SPEED LINES ──────────────────────────────────────────────────────────
 const slContainer = document.getElementById('speedLines');
-for (let i = 0; i < 6; i++) {
-  const line = document.createElement('div');
-  line.className = 'speed-line';
-  const top  = 10 + Math.random() * 80;
-  const w    = 80 + Math.random() * 200;
-  const delay= Math.random() * 3;
-  const dur  = 1 + Math.random() * 1.2;
-  line.style.cssText = `top:${top}%; width:${w}px; animation-delay:${delay}s; animation-duration:${dur}s;`;
-  slContainer.appendChild(line);
+if (slContainer) {
+  for (let i = 0; i < 6; i++) {
+    const line = document.createElement('div');
+    line.className = 'speed-line';
+    const top  = 10 + Math.random() * 80;
+    const w    = 80 + Math.random() * 200;
+    const delay= Math.random() * 3;
+    const dur  = 1 + Math.random() * 1.2;
+    line.style.cssText = `top:${top}%; width:${w}px; animation-delay:${delay}s; animation-duration:${dur}s;`;
+    slContainer.appendChild(line);
+  }
 }
+} // end track canvas guard
 
 // ─── COLLISION SIMULATION ─────────────────────────────────────────────────
 (function initCollisionAnim() {
@@ -1308,10 +1389,18 @@ for (let i = 0; i < 6; i++) {
 
       ctx.font = '11px "Space Mono", monospace';
       ctx.textAlign = 'left';
-      ctx.fillStyle = isPos ? '#7dffa5' : '#ff8a99';
       const sign = isPos ? '+' : '−';
       const stars = '★'.repeat(feedback.stars) + '☆'.repeat(5 - feedback.stars);
-      ctx.fillText(`${stars}  ${sign}${Math.abs(feedback.delta).toFixed(2)}`, barX, y - 14);
+      const value = Math.abs(feedback.delta).toFixed(2);
+      const labelY = y - 14;
+      const starsText = `${stars}  `;
+      ctx.fillStyle = isPos ? '#7dffa5' : '#ff8a99';
+      ctx.fillText(starsText, barX, labelY);
+      const signX = barX + ctx.measureText(starsText).width;
+      ctx.fillStyle = '#ff2233';
+      ctx.fillText(sign, signX, labelY);
+      ctx.fillStyle = isPos ? '#7dffa5' : '#ff8a99';
+      ctx.fillText(value, signX + ctx.measureText(sign).width, labelY);
       ctx.globalAlpha = 1;
     }
   }
@@ -1399,4 +1488,221 @@ for (let i = 0; i < 6; i++) {
       btn.disabled = false;
     }
   });
+})();
+
+// ─── ML PROJECTS CAROUSEL ─────────────────────────────────────────────────
+(function initProjectCarousel() {
+  const section = document.getElementById('projects');
+  const track = document.getElementById('project-carousel-track');
+  const viewport = document.getElementById('project-carousel-viewport');
+  if (!section || !track || !viewport) return;
+
+  const slides = Array.from(track.querySelectorAll('.carousel-slide'));
+  const dots = Array.from(section.querySelectorAll('.carousel-dot'));
+  const prevBtn = section.querySelector('.carousel-prev');
+  const nextBtn = section.querySelector('.carousel-next');
+  const statusCurrent = section.querySelector('.carousel-status-current');
+  const slideIds = slides.map(s => s.id);
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let index = 0;
+  let resizeTimer = 0;
+
+  function clampIndex(i) {
+    return (i + slides.length) % slides.length;
+  }
+
+  function updateViewportHeight() {
+    const active = slides[index];
+    if (!active) return;
+    viewport.style.height = `${active.scrollHeight}px`;
+  }
+
+  function scheduleHeightUpdate() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      updateViewportHeight();
+      window.dispatchEvent(new Event('resize'));
+    }, reduceMotion ? 0 : 480);
+  }
+
+  function scrollSectionToTop() {
+    section.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  function goTo(nextIndex, updateHash) {
+    index = clampIndex(nextIndex);
+    const theme = slides[index].dataset.theme || 'racing';
+    track.style.transform = `translateX(-${index * 100}%)`;
+    section.dataset.activeTheme = theme;
+
+    slides.forEach((slide, i) => {
+      const active = i === index;
+      slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+    });
+
+    dots.forEach((dot, i) => {
+      const active = i === index;
+      dot.classList.toggle('is-active', active);
+      dot.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+
+    if (statusCurrent) statusCurrent.textContent = String(index + 1);
+
+    if (updateHash !== false) {
+      const id = slideIds[index];
+      if (id && location.hash !== `#${id}`) {
+        history.replaceState(null, '', `#${id}`);
+      }
+    }
+
+    scheduleHeightUpdate();
+  }
+
+  function slideFromHash() {
+    const hash = location.hash.slice(1);
+    if (!hash) return;
+    if (hash === 'projects') {
+      if (index !== 0) goTo(0, false);
+      return;
+    }
+    const idx = slideIds.indexOf(hash);
+    if (idx >= 0 && idx !== index) goTo(idx, false);
+  }
+
+  prevBtn?.addEventListener('click', () => {
+    goTo(index - 1);
+    scrollSectionToTop();
+  });
+  nextBtn?.addEventListener('click', () => {
+    goTo(index + 1);
+    scrollSectionToTop();
+  });
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const target = Number(dot.dataset.slide);
+      if (!Number.isNaN(target)) goTo(target);
+    });
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!section.contains(document.activeElement) && document.activeElement !== document.body) {
+      const rect = section.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight * 0.85 && rect.bottom > window.innerHeight * 0.15;
+      if (!inView) return;
+    }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(index - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); goTo(index + 1); }
+  });
+
+  window.addEventListener('hashchange', slideFromHash);
+  window.addEventListener('resize', scheduleHeightUpdate);
+
+  if (typeof ResizeObserver !== 'undefined') {
+    const ro = new ResizeObserver(scheduleHeightUpdate);
+    slides.forEach(slide => ro.observe(slide));
+  }
+
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(scheduleHeightUpdate);
+  }
+
+  function openFromNav(id, smoothScroll) {
+    const idx = id === 'projects' ? 0 : slideIds.indexOf(id);
+    if (idx < 0) return;
+    goTo(idx);
+    if (smoothScroll) {
+      section.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    }
+  }
+
+  document.querySelectorAll(
+    'a[href="#projects"], a[href="#racing"], a[href="#collisions"], a[href="#caffeine"]'
+  ).forEach(link => {
+    link.addEventListener('click', e => {
+      const id = link.getAttribute('href')?.slice(1);
+      if (!id) return;
+      const idx = id === 'projects' ? 0 : slideIds.indexOf(id);
+      if (idx < 0) return;
+      e.preventDefault();
+      openFromNav(id, true);
+    });
+  });
+
+  slideFromHash();
+  goTo(index, false);
+  requestAnimationFrame(updateViewportHeight);
+})();
+
+// ─── STICKY CAROUSEL NAV ──────────────────────────────────────────────────
+(function initStickyCarouselNav() {
+  const section = document.getElementById('projects');
+  const nav = section?.querySelector('.carousel-nav');
+  const siteNav = document.querySelector('nav');
+  if (!section || !nav) return;
+
+  const placeholder = document.createElement('div');
+  placeholder.className = 'carousel-nav-placeholder';
+  placeholder.setAttribute('aria-hidden', 'true');
+  nav.after(placeholder);
+
+  let navHeight = 0;
+
+  function stickLine() {
+    if (siteNav) return siteNav.getBoundingClientRect().bottom;
+    const raw = getComputedStyle(document.documentElement).getPropertyValue('--nav-height');
+    return parseFloat(raw) || 68;
+  }
+
+  function measure() {
+    if (nav.classList.contains('is-stuck')) return;
+    navHeight = nav.offsetHeight;
+    placeholder.style.height = `${navHeight}px`;
+  }
+
+  function applyStuckTop() {
+    nav.style.top = `${stickLine()}px`;
+  }
+
+  function update() {
+    const line = stickLine();
+    const slotTop = (nav.classList.contains('is-stuck') ? placeholder : nav).getBoundingClientRect().top;
+    const sectionBottom = section.getBoundingClientRect().bottom;
+    const shouldStick = slotTop <= line && sectionBottom > line + navHeight;
+
+    if (shouldStick && !nav.classList.contains('is-stuck')) {
+      measure();
+      nav.classList.add('is-stuck');
+      placeholder.classList.add('is-active');
+      applyStuckTop();
+    } else if (!shouldStick && nav.classList.contains('is-stuck')) {
+      nav.classList.remove('is-stuck');
+      nav.style.top = '';
+      placeholder.classList.remove('is-active');
+      requestAnimationFrame(measure);
+    } else if (nav.classList.contains('is-stuck')) {
+      applyStuckTop();
+    }
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', () => {
+    nav.classList.remove('is-stuck');
+    nav.style.top = '';
+    placeholder.classList.remove('is-active');
+    measure();
+    update();
+  });
+
+  if (typeof ResizeObserver !== 'undefined') {
+    const ro = new ResizeObserver(() => {
+      if (!nav.classList.contains('is-stuck')) measure();
+      update();
+    });
+    ro.observe(section);
+    ro.observe(nav);
+    if (siteNav) ro.observe(siteNav);
+  }
+
+  measure();
+  update();
 })();

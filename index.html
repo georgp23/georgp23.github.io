@@ -42,9 +42,7 @@
   </button>
   <div id="primary-nav" class="nav-links">
     <a href="#met-office">Met Office</a>
-    <a href="#racing">IBM Racing</a>
-    <a href="#collisions">Collisions ML</a>
-    <a href="#caffeine">Caffeine AI</a>
+    <a href="#projects">ML Projects</a>
     <a href="#responsible-ai">Responsible AI</a>
     <a href="#about">About</a>
     <a href="#certifications">Certs</a>
@@ -70,13 +68,11 @@
 
   <div class="float-tags">
     <a class="float-tag" href="#met-office"><span>01</span>Met Office</a>
-    <a class="float-tag" href="#racing"><span>02</span>IBM Racing</a>
-    <a class="float-tag" href="#collisions"><span>03</span>Collisions ML</a>
-    <a class="float-tag" href="#caffeine"><span>04</span>Caffeine AI</a>
-    <a class="float-tag" href="#responsible-ai"><span>05</span>AI Safety</a>
-    <a class="float-tag" href="#about"><span>06</span>About</a>
-    <a class="float-tag" href="#certifications"><span>07</span>Certs</a>
-    <a class="float-tag" href="#contact"><span>08</span>Contact</a>
+    <a class="float-tag" href="#projects"><span>02</span>ML Projects</a>
+    <a class="float-tag" href="#responsible-ai"><span>03</span>AI Safety</a>
+    <a class="float-tag" href="#about"><span>04</span>About</a>
+    <a class="float-tag" href="#certifications"><span>05</span>Certs</a>
+    <a class="float-tag" href="#contact"><span>06</span>Contact</a>
   </div>
 
   <div class="this-way-wrap">
@@ -242,16 +238,42 @@
   </div>
 </section>
 
-<!-- ═══ RACING AI ══════════════════════════════════════════════════════════ -->
-<section id="racing">
-  <div class="speed-lines" id="speedLines"></div>
+<!-- ═══ ML PROJECTS CAROUSEL ═════════════════════════════════════════════ -->
+<section id="projects" data-active-theme="racing">
+  <div class="carousel-header reveal">
+    <div class="carousel-controls-top">
+      <div class="section-label">// 02 · ML Projects</div>
+      <p class="carousel-status" aria-live="polite">
+        <span class="carousel-status-current">1</span> / <span class="carousel-status-total">3</span>
+      </p>
+    </div>
+  </div>
+  <div class="carousel-nav" aria-label="Project carousel navigation">
+    <button type="button" class="carousel-arrow carousel-prev" aria-label="Previous project">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="carousel-dots" role="tablist" aria-label="Choose project">
+      <button type="button" class="carousel-dot is-active" role="tab" aria-selected="true" aria-controls="racing" data-slide="0">IBM Racing</button>
+      <button type="button" class="carousel-dot" role="tab" aria-selected="false" aria-controls="collisions" data-slide="1">Collisions</button>
+      <button type="button" class="carousel-dot" role="tab" aria-selected="false" aria-controls="caffeine" data-slide="2">Caffeine AI</button>
+    </div>
+    <button type="button" class="carousel-arrow carousel-next" aria-label="Next project">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <div class="carousel-shell">
+    <div class="carousel-viewport" id="project-carousel-viewport">
+      <div class="carousel-track" id="project-carousel-track">
+
+        <article class="carousel-slide carousel-slide--racing" id="racing" data-theme="racing" aria-hidden="false">
+          <div class="speed-lines" id="speedLines"></div>
 
   <div class="racing-header reveal">
     <div class="racing-title-wrap">
-      <div class="section-label">// 02 · Group Project</div>
+      <div class="section-label">// 01 · Group Project</div>
       <h2 class="section-title">IBM SHUmachers</h2>
-      <h4 class="section-title", style="font-size: clamp(1.5rem, 4vw, 2.5rem);
-">- TORCS Racing AI</h4>
+      <h4 class="section-title racing-subtitle">- TORCS Racing AI</h4>
      <div class="project-meta-links">
         <a class="project-meta-link" href="https://www.linkedin.com/posts/george-p-28a83b1a5_artificialintelligence-machinelearning-softwareengineering-share-7459568022010339328-P5xs" target="_blank" rel="noopener noreferrer">→ View Project Poster</a>
       </div>
@@ -297,13 +319,12 @@
     <span class="tech-tag tech-tag-yellow">Streamlit Dashboard</span>
     <span class="tech-tag tech-tag-cyan">Edge TTS</span>
   </div>
-</section>
+        </article>
 
-<!-- ═══ SHEFFIELD COLLISIONS ML PIPELINE ═════════════════════════════════ -->
-<section id="collisions">
+        <article class="carousel-slide carousel-slide--collisions" id="collisions" data-theme="collisions" aria-hidden="true">
   <div class="project-header reveal">
     <div>
-      <div class="section-label">// 03 · Latest ML Project</div>
+      <div class="section-label">// 02 · Latest ML Project</div>
       <h2 class="section-title">Sheffield Collisions ML Pipeline</h2>
       <div class="divider"></div>
       <p class="project-desc">
@@ -357,7 +378,7 @@
     </div>
     <div class="feature-card">
       <h3>Spatial Mapping</h3>
-      <p>ConvexHull + Folium to render interactive collision clusters without overwhelming the map.</p>
+      <p data-no-sign-highlight>ConvexHull + Folium to render interactive collision clusters without overwhelming the map.</p>
     </div>
     <div class="feature-card">
       <h3>Feature Engineering</h3>
@@ -381,13 +402,12 @@
     <span class="tech-tag tech-tag-cyan">statsmodels</span>
     <span class="tech-tag tech-tag-cyan">ConvexHull</span>
   </div>
-</section>
+        </article>
 
-<!-- ═══ HYBRID LLM + ML CAFFEINE RECOMMENDER ═════════════════════════════ -->
-<section id="caffeine">
+        <article class="carousel-slide carousel-slide--caffeine" id="caffeine" data-theme="caffeine" aria-hidden="true">
   <div class="project-header reveal">
     <div>
-      <div class="section-label">// 04 · Hybrid AI System</div>
+      <div class="section-label">// 03 · Hybrid AI System</div>
       <h2 class="section-title">Hybrid LLM + ML Recommendation System</h2>
       <div class="divider" style="background: var(--racing-orange);"></div>
       <p class="project-desc">
@@ -451,14 +471,19 @@
     <span class="tech-tag tech-tag-cyan">Feedback Learning</span>
     <span class="tech-tag tech-tag-yellow">Federated-Style Aggregation</span>
   </div>
+        </article>
+
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ═══ RESPONSIBLE AI ═══════════════════════════════════════════════════ -->
 <section id="responsible-ai">
   <div class="project-header reveal">
     <div>
-      <div class="section-label">// 05 · Research Interest</div>
-      <h2 class="section-title">Responsible AI & Safety</h2>
+      <div class="section-label">// 03 · Research Interest</div>
+      <h2 class="section-title">Responsible AI + Safety</h2>
       <div class="divider"></div>
       <p class="project-desc">
         I'm interested in AI systems that remain reliable, explainable and controllable as they become
@@ -514,7 +539,7 @@
 <!-- ═══ ABOUT ════════════════════════════════════════════════════════════ -->
 <section id="about">
   <div>
-    <div class="section-label reveal">// 06 · Background</div>
+    <div class="section-label reveal">// 04 · Background</div>
     <h2 class="section-title reveal">About Me</h2>
     <div class="divider reveal"></div>
     <div class="about-text reveal">
@@ -638,7 +663,7 @@ prototyping and feedback-driven personalisation.</div>
   </div>
   <div class="cert-header">
     <div class="cert-header-text">
-      <div class="section-label reveal">// 07 · Certifications</div>
+      <div class="section-label reveal">// 05 · Certifications</div>
       <h2 class="section-title reveal">Verified Learning</h2>
       <div class="divider reveal"></div>
       <p class="project-desc reveal" style="margin-bottom:0;">
@@ -714,7 +739,7 @@ prototyping and feedback-driven personalisation.</div>
 
 <!-- ═══ CONTACT ═══════════════════════════════════════════════════════════ -->
 <section id="contact">
-  <div class="section-label reveal" style="text-align:center; letter-spacing:0.4em;">// 08 · Get In Touch</div>
+  <div class="section-label reveal" style="text-align:center; letter-spacing:0.4em;">// 06 · Get In Touch</div>
   <h2 class="contact-big reveal">Let's Build<br>Something.</h2>
   <p class="contact-sub reveal">
     Open to conversations about AI, automation, data analysis, ethical ML and useful software systems.
