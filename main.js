@@ -1530,3 +1530,77 @@ if (slContainer) {
   goTo(index, false);
   requestAnimationFrame(updateViewportHeight);
 })();
+
+// ─── STICKY CAROUSEL NAV ──────────────────────────────────────────────────
+(function initStickyCarouselNav() {
+  const section = document.getElementById('projects');
+  const nav = section?.querySelector('.carousel-nav');
+  const siteNav = document.querySelector('nav');
+  if (!section || !nav) return;
+
+  const placeholder = document.createElement('div');
+  placeholder.className = 'carousel-nav-placeholder';
+  placeholder.setAttribute('aria-hidden', 'true');
+  nav.after(placeholder);
+
+  let navHeight = 0;
+
+  function stickLine() {
+    if (siteNav) return siteNav.getBoundingClientRect().bottom;
+    const raw = getComputedStyle(document.documentElement).getPropertyValue('--nav-height');
+    return parseFloat(raw) || 68;
+  }
+
+  function measure() {
+    if (nav.classList.contains('is-stuck')) return;
+    navHeight = nav.offsetHeight;
+    placeholder.style.height = `${navHeight}px`;
+  }
+
+  function applyStuckTop() {
+    nav.style.top = `${stickLine()}px`;
+  }
+
+  function update() {
+    const line = stickLine();
+    const slotTop = (nav.classList.contains('is-stuck') ? placeholder : nav).getBoundingClientRect().top;
+    const sectionBottom = section.getBoundingClientRect().bottom;
+    const shouldStick = slotTop <= line && sectionBottom > line + navHeight;
+
+    if (shouldStick && !nav.classList.contains('is-stuck')) {
+      measure();
+      nav.classList.add('is-stuck');
+      placeholder.classList.add('is-active');
+      applyStuckTop();
+    } else if (!shouldStick && nav.classList.contains('is-stuck')) {
+      nav.classList.remove('is-stuck');
+      nav.style.top = '';
+      placeholder.classList.remove('is-active');
+      requestAnimationFrame(measure);
+    } else if (nav.classList.contains('is-stuck')) {
+      applyStuckTop();
+    }
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', () => {
+    nav.classList.remove('is-stuck');
+    nav.style.top = '';
+    placeholder.classList.remove('is-active');
+    measure();
+    update();
+  });
+
+  if (typeof ResizeObserver !== 'undefined') {
+    const ro = new ResizeObserver(() => {
+      if (!nav.classList.contains('is-stuck')) measure();
+      update();
+    });
+    ro.observe(section);
+    ro.observe(nav);
+    if (siteNav) ro.observe(siteNav);
+  }
+
+  measure();
+  update();
+})();

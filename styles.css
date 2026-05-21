@@ -16,6 +16,7 @@
     --racing-red: #ff2233;
     --racing-orange: #ff8c00;
     --racing-yellow: #ffe033;
+    --nav-height: 4.25rem;
   }
 
   html { scroll-behavior: smooth; }
@@ -100,6 +101,7 @@
   nav.open .nav-toggle span:nth-child(3) { top: 17px; transform: rotate(-45deg); }
 
   @media (max-width: 900px) {
+    :root { --nav-height: 3.5rem; }
     nav { padding: 1rem 1.5rem; }
     .nav-toggle { display: block; }
     .nav-links {
@@ -625,7 +627,6 @@
 
   /* ─── ML PROJECTS CAROUSEL ──────────────────────────────────────────── */
   #projects {
-    overflow: hidden;
     padding-bottom: 6rem;
     transition: background 0.55s ease;
   }
@@ -646,7 +647,10 @@
       radial-gradient(ellipse 55% 65% at 88% 80%, rgba(0,255,200,0.06), transparent 60%),
       linear-gradient(180deg, var(--bg), var(--bg2));
   }
-  .carousel-controls {
+  .carousel-header {
+    margin-bottom: 1.25rem;
+  }
+  .carousel-nav {
     margin-bottom: 2.5rem;
   }
   .carousel-controls-top {
@@ -670,6 +674,27 @@
     align-items: center;
     justify-content: center;
     gap: 1.25rem;
+    padding: 0.85rem 0;
+    margin: 0 -3rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+  .carousel-nav.is-stuck {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    margin: 0;
+  }
+  .carousel-nav-placeholder {
+    display: none;
+    pointer-events: none;
+  }
+  .carousel-nav-placeholder.is-active {
+    display: block;
+  }
+  #projects .carousel-slide .section-label {
+    color: var(--racing-orange);
   }
   .carousel-shell {
     position: relative;
@@ -1594,6 +1619,9 @@
 
     .carousel-nav {
       gap: 0.75rem;
+      margin: 0 -1.5rem;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
     }
     .carousel-arrow {
       width: 2.6rem;
@@ -1603,7 +1631,7 @@
       font-size: 0.58rem;
       padding: 0.42rem 0.65rem;
     }
-    .carousel-controls {
+    .carousel-nav {
       margin-bottom: 2rem;
     }
 
@@ -1730,6 +1758,12 @@
   @media (max-width: 560px) {
     section {
       padding: 5rem 1rem;
+    }
+
+    .carousel-nav {
+      margin: 0 -1rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
     }
 
     .section-label {
