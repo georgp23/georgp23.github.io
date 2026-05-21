@@ -321,15 +321,15 @@
   <div class="project-header reveal">
     <div>
       <div class="section-label">// 04 · Hybrid AI System</div>
-      <h2 class="section-title">Hybrid LLM + ML Caffeine Recommender</h2>
+      <h2 class="section-title">Hybrid LLM + ML Recommendation System</h2>
       <div class="divider" style="background: var(--racing-orange);"></div>
       <p class="project-desc">
-        A proof-of-concept recommendation system for data-scarce domains. It starts with no real
-        user data, uses an LLM to convert natural language into validated JSON, prototypes a global
-        model from synthetic rule-based data, then evolves through user feedback into personalised
-        recommendations.
-      </p>
-      <div class="project-meta-links">
+        A hybrid recommendation system for data-scarce domains, combining LLM-based input parsing,
+        synthetic-data prototyping and feedback-driven personalisation. The system starts without real
+        user data, validates a global model using rule-based synthetic labels, then adapts through
+        per-user feedback into personalised recommendations.
+      </p>      
+<div class="project-meta-links">
         <a class="project-meta-link orange" href="https://github.com/georgp23/llm-ml-caffeine-assistant" target="_blank" rel="noopener noreferrer">→ View on GitHub</a>
         <a class="project-meta-link orange" href="https://medium.com/@georgep23/from-zero-data-to-personalised-intelligence-a-hybrid-llm-and-ml-approach-3dfb80d6e9d2" target="_blank" rel="noopener noreferrer">→ Read on Medium</a>
       </div>
@@ -337,10 +337,10 @@
     <div class="project-card">
       <div class="project-card-title">Core Idea</div>
       <div class="project-list">
-        <div>LLM acts as a deterministic natural-language-to-JSON parser</div>
-        <div>Random Forest validates the global recommendation pipeline using synthetic data</div>
-        <div>Per-user linear models re-rank drinks from real feedback</div>
-        <div>Aggregated updates improve the global model over time</div>
+      <div>LLM converts natural language into validated structured input</div>
+      <div>Synthetic rule-based data validates the first global model</div>
+      <div>Per-user models re-rank drinks using real feedback</div>
+      <div>Aggregated feedback improves the global starting point over time</div>
       </div>
     </div>
   </div>
@@ -352,24 +352,24 @@
 
   <div class="project-grid reveal">
     <div class="feature-card">
-      <h3>Zero-Data Start</h3>
-      <p>Drink profiles and rule-based synthetic labels test the recommendation pipeline before any real feedback exists.</p>
+    <h3>Zero-Data Start</h3>
+    <p>Drink profiles and synthetic rule-based labels validate the recommendation pipeline before real user feedback exists.</p>    
+</div>
+    <div class="feature-card">
+      <h3>LLM-to-JSON Parsing</h3>
+      <p>Strict prompting, schema validation and low-temperature generation convert messy user intent into reliable structured input.</p>
     </div>
     <div class="feature-card">
-      <h3>LLM JSON Parser</h3>
-      <p>Strict prompt engineering, fixed schema constraints and low temperature convert messy user intent into reliable structured input.</p>
-    </div>
-    <div class="feature-card">
-      <h3>Explainable Output</h3>
-      <p>Top recommendations are fed back into the LLM so it can explain the ranked choices conversationally without overriding them.</p>
+      <h3>Explainable Recommendations</h3>
+      <p>Ranked recommendations are passed back to the LLM for conversational explanations, without letting it override the model outputs.</p>
     </div>
     <div class="feature-card">
       <h3>Personal Feedback Loop</h3>
-      <p>1-5 user ratings with epsilon-greedy exploration to reduce exposure bias, training per-user models once enough data exists.</p>
+      <p>User ratings and epsilon-greedy exploration reduce exposure bias while training personalised ranking models over time.</p>
     </div>
     <div class="feature-card">
       <h3>Federated-Style Updates</h3>
-      <p>Aggregated user model coefficients with sample-aware weighting, inspired by FedAvg/FedNova, to improve the global starting point.</p>
+      <p>Sample-weighted user model updates, inspired by FedAvg and FedNova, help improve the global model without relying on one user's data.</p>
     </div>
   </div>
 
@@ -394,18 +394,18 @@
       <h2 class="section-title">Responsible AI & Safety</h2>
       <div class="divider"></div>
       <p class="project-desc">
-        I am especially interested in AI systems that are useful without becoming opaque or careless.
-        Across my projects, that means treating reliability, explainability, validation and user safety
-        as design requirements rather than afterthoughts.
+        I'm interested in AI systems that remain reliable, explainable and controllable as they become
+        more capable. Across my projects, that means treating validation, transparency and user safety
+        as core engineering requirements rather than afterthoughts.
       </p>
     </div>
     <div class="project-card">
       <div class="project-card-title">Principles I Build Around</div>
       <div class="project-list">
-        <div>Constrain model outputs when structure matters</div>
-        <div>Keep humans aware of uncertainty and limitations</div>
-        <div>Use feedback loops carefully to reduce bias and drift</div>
-        <div>Document assumptions, data choices and validation clearly</div>
+        <div>Constrain model outputs where reliability matters</div>
+        <div>Make uncertainty and system limitations visible</div>
+        <div>Design feedback loops to reduce drift and bias</div>
+        <div>Document assumptions, validation and data choices clearly</div>
       </div>
     </div>
   </div>
@@ -413,34 +413,34 @@
   <div class="project-grid reveal">
     <div class="feature-card">
       <h3>Structured LLM Outputs</h3>
-      <p>Natural language is converted into a fixed JSON schema with validation so downstream ML receives predictable, auditable inputs.</p>
+      <p>Natural language is converted into validated JSON schemas so downstream systems receive predictable and auditable inputs.</p>
     </div>
     <div class="feature-card">
       <h3>Transparent Ranking</h3>
-      <p>Recommendations are ranked through explicit features, rules, feedback and model scores - explained conversationally without LLM override.</p>
+      <p>Recommendations are ranked through explicit features, feedback and model scores, then explained conversationally without allowing the LLM to override the ranking.</p>
     </div>
     <div class="feature-card">
       <h3>Bias-Aware Feedback</h3>
-      <p>Epsilon-greedy exploration reduces exposure bias and personal models are weighted carefully before influencing global behaviour.</p>
+      <p>Epsilon-greedy exploration reduces exposure bias, while weighted aggregation prevents individual users from disproportionately shaping the global model.</p>
     </div>
     <div class="feature-card">
       <h3>Data Integrity</h3>
-      <p>The collisions pipeline documents navigation, preprocessing, validation splits, missingness, VIF pruning and a no-LLM declaration.</p>
+      <p>The collisions pipeline emphasises reproducibility through documented preprocessing, validation splits, feature pruning and transparent ML workflows.</p>
     </div>
     <div class="feature-card">
       <h3>Controlled Generation</h3>
-      <p>LLM commentary is decoupled from driving, uses cooldowns, and applies soft stopping via logit biasing to keep generation bounded.</p>
+      <p>LLM commentary is separated from driving logic and constrained using cooldowns and logit biasing to keep generation controlled and bounded.</p>
     </div>
   </div>
 
   <div class="tech-tags reveal">
     <span class="tech-tag tech-tag-cyan">AI Safety</span>
-    <span class="tech-tag tech-tag-cyan">Explainability</span>
-    <span class="tech-tag tech-tag-yellow">Validation</span>
-    <span class="tech-tag tech-tag-yellow">JSON Guardrails</span>
-    <span class="tech-tag tech-tag-cyan">Bias Awareness</span>
-    <span class="tech-tag tech-tag-yellow">Documentation</span>
-    <span class="tech-tag tech-tag-cyan">Ethical AI</span>
+    <span class="tech-tag tech-tag-cyan">Explainable ML</span>
+    <span class="tech-tag tech-tag-yellow">Validation Pipelines</span>
+    <span class="tech-tag tech-tag-yellow">Structured Outputs</span>
+    <span class="tech-tag tech-tag-cyan">Bias Mitigation</span>
+    <span class="tech-tag tech-tag-yellow">Controlled Generation</span>
+    <span class="tech-tag tech-tag-cyan">Model Reliability</span>
   </div>
 </section>
 
