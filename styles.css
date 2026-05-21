@@ -21,6 +21,10 @@
 
   html { scroll-behavior: smooth; }
 
+  .sign-char {
+    color: var(--racing-red);
+  }
+
   body {
     background: var(--bg);
     color: var(--white);
@@ -798,8 +802,11 @@
     margin-bottom: 4rem;
   }
   .racing-title-wrap .section-title {
+    color: var(--white);
+    text-shadow: none;
+  }
+  .racing-title-wrap .racing-subtitle {
     color: var(--racing-yellow);
-    text-shadow: 0 0 40px rgba(255,224,51,0.2);
   }
   /* checkered flag accent */
   .checkered {

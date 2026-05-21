@@ -17,6 +17,81 @@ const obs = new IntersectionObserver(entries => {
 }, { threshold: 0.12 });
 revEls.forEach(el => obs.observe(el));
 
+// ─── RED + / − IN PAGE TEXT ────────────────────────────────────────────────
+(function highlightPlusMinus() {
+  const skipTags = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION']);
+
+  function shouldHighlight(ch, text, index) {
+    if (ch === '+') return true;
+    const beforeWord = index > 0 && /\w/.test(text[index - 1]);
+    const afterWord = index < text.length - 1 && /\w/.test(text[index + 1]);
+    return !(beforeWord && afterWord);
+  }
+
+  function hasHighlightableSign(text) {
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if ((ch === '+' || ch === '-' || ch === '−') && shouldHighlight(ch, text, i)) return true;
+    }
+    return false;
+  }
+
+  function wrapTextNode(node) {
+    const text = node.nodeValue;
+    if (!hasHighlightableSign(text)) return;
+    const frag = document.createDocumentFragment();
+    let last = 0;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if ((ch === '+' || ch === '-' || ch === '−') && shouldHighlight(ch, text, i)) {
+        if (i > last) frag.appendChild(document.createTextNode(text.slice(last, i)));
+        const span = document.createElement('span');
+        span.className = 'sign-char';
+        span.textContent = ch;
+        frag.appendChild(span);
+        last = i + 1;
+      }
+    }
+    if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+    node.parentNode.replaceChild(frag, node);
+  }
+
+  function wrapPlusOnly(node) {
+    const text = node.nodeValue;
+    const index = text.indexOf('+');
+    if (index === -1) return;
+    const frag = document.createDocumentFragment();
+    if (index > 0) frag.appendChild(document.createTextNode(text.slice(0, index)));
+    const span = document.createElement('span');
+    span.className = 'sign-char';
+    span.textContent = '+';
+    frag.appendChild(span);
+    if (index + 1 < text.length) frag.appendChild(document.createTextNode(text.slice(index + 1)));
+    node.parentNode.replaceChild(frag, node);
+  }
+
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const parent = node.parentElement;
+      if (!parent || skipTags.has(parent.tagName)) return NodeFilter.FILTER_REJECT;
+      if (parent.closest('.sign-char, #about, #met-office, [data-no-sign-highlight]')) return NodeFilter.FILTER_REJECT;
+      return hasHighlightableSign(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    }
+  });
+
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(wrapTextNode);
+
+  const titles = document.querySelectorAll('#about .t-title');
+  for (const title of titles) {
+    if (!title.textContent.includes('LLM + ML')) continue;
+    const titleWalker = document.createTreeWalker(title, NodeFilter.SHOW_TEXT);
+    while (titleWalker.nextNode()) wrapPlusOnly(titleWalker.currentNode);
+    break;
+  }
+})();
+
 // ─── THIS WAY SIGN ─────────────────────────────────────────────────────────
 (function initThisWaySign() {
   const sign = document.querySelector('.this-way-wrap');
@@ -1314,10 +1389,18 @@ if (slContainer) {
 
       ctx.font = '11px "Space Mono", monospace';
       ctx.textAlign = 'left';
-      ctx.fillStyle = isPos ? '#7dffa5' : '#ff8a99';
       const sign = isPos ? '+' : '−';
       const stars = '★'.repeat(feedback.stars) + '☆'.repeat(5 - feedback.stars);
-      ctx.fillText(`${stars}  ${sign}${Math.abs(feedback.delta).toFixed(2)}`, barX, y - 14);
+      const value = Math.abs(feedback.delta).toFixed(2);
+      const labelY = y - 14;
+      const starsText = `${stars}  `;
+      ctx.fillStyle = isPos ? '#7dffa5' : '#ff8a99';
+      ctx.fillText(starsText, barX, labelY);
+      const signX = barX + ctx.measureText(starsText).width;
+      ctx.fillStyle = '#ff2233';
+      ctx.fillText(sign, signX, labelY);
+      ctx.fillStyle = isPos ? '#7dffa5' : '#ff8a99';
+      ctx.fillText(value, signX + ctx.measureText(sign).width, labelY);
       ctx.globalAlpha = 1;
     }
   }
