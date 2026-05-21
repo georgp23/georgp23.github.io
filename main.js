@@ -1124,7 +1124,7 @@ for (let i = 0; i < 6; i++) {
 
     if (phase === 'settle') {
       timer++;
-      if (timer > 90) reset();
+      if (timer > 10) reset();
     }
 
     cars.forEach(c => {
