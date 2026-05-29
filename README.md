@@ -6,7 +6,7 @@ Live at: **https://georgp23.github.io/**
 
 ## About
 
-A single-page portfolio focused on applied AI, machine learning and automation work. The site is hand-written HTML/CSS/JS - no build step, no framework, no tracking. Highlights include:
+A single-page portfolio focused on applied AI, machine learning and automation work. The site is HTML/CSS/JS - no build step, no framework, no tracking. Highlights include:
 
 - **Met Office placement** - AI Foundation Software Engineer (incoming)
 - **IBM SHUmachers** - reinforcement-learning driver in TORCS with an LLM commentary layer
