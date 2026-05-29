@@ -334,6 +334,10 @@
     width: 60px; height: 1px;
     background: var(--cyan); margin: 2rem 0;
   }
+  .divider--leaf-glow { background: var(--leaf-glow); }
+  .divider--racing-orange { background: var(--racing-orange); }
+  .cert-header-desc { margin-bottom: 0; }
+  .contact-section-label { text-align: center; letter-spacing: 0.4em; }
 
   /* ─── MET OFFICE ────────────────────────────────────────────────────── */
   #met-office {

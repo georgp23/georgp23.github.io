@@ -117,6 +117,24 @@ revEls.forEach(el => obs.observe(el));
   sign.style.willChange = 'opacity, transform';
 })();
 
+// ─── CERT BG STARS (CSP: position vars applied via JS, not inline style attributes) ─
+(function initCertBgStars() {
+  const varMap = [
+    ['x', '--x'],
+    ['y', '--y'],
+    ['s', '--s'],
+    ['starD', '--star-d'],
+    ['starFinal', '--star-final'],
+    ['starColor', '--star-color'],
+  ];
+  document.querySelectorAll('.cert-bg-star').forEach(star => {
+    varMap.forEach(([dataKey, cssVar]) => {
+      const value = star.dataset[dataKey];
+      if (value !== undefined) star.style.setProperty(cssVar, value);
+    });
+  });
+})();
+
 // ─── CERTIFICATION TELESCOPE SCROLL ─────────────────────────────────────────
 (function initCertTelescopeScroll() {
   const section = document.getElementById('certifications');
@@ -153,7 +171,7 @@ revEls.forEach(el => obs.observe(el));
     stars.forEach((star, i) => {
       const start = i / (stars.length + 3);
       const starProgress = clamp((progress - start) / 0.22, 0, 1);
-      const finalOpacity = Number(star.style.getPropertyValue('--star-final')) || 0.95;
+      const finalOpacity = Number(star.dataset.starFinal) || 0.95;
       star.style.opacity = (smoothstep(starProgress) * finalOpacity).toFixed(2);
       star.style.setProperty('--star-scale', (0.65 + smoothstep(starProgress) * 0.35).toFixed(2));
     });
