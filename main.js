@@ -1,14 +1,32 @@
 // ─── CURSOR ────────────────────────────────────────────────────────────────
 const cursor = document.getElementById('cursor');
 const ring   = document.getElementById('cursor-ring');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-(function animCursor() {
-  cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
-  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
-  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-  requestAnimationFrame(animCursor);
-})();
+
+function observeSectionVisibility(target, onChange, threshold = 0.15) {
+  if (!target) {
+    onChange(false);
+    return () => {};
+  }
+  let visible = false;
+  const observer = new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    onChange(visible);
+  }, { threshold });
+  observer.observe(target);
+  return () => observer.disconnect();
+}
+
+if (cursor && ring && !prefersReducedMotion && window.matchMedia('(pointer: fine)').matches) {
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  (function animCursor() {
+    cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animCursor);
+  })();
+}
 
 // ─── SCROLL REVEAL ─────────────────────────────────────────────────────────
 const revEls = document.querySelectorAll('.reveal');
@@ -95,7 +113,7 @@ revEls.forEach(el => obs.observe(el));
 // ─── THIS WAY SIGN ─────────────────────────────────────────────────────────
 (function initThisWaySign() {
   const sign = document.querySelector('.this-way-wrap');
-  if (!sign || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!sign || prefersReducedMotion) return;
   sign.style.willChange = 'opacity, transform';
 })();
 
@@ -472,7 +490,7 @@ revEls.forEach(el => obs.observe(el));
 (function initTreeRain() {
   const canvas = document.getElementById('tree-rain-canvas');
   const svg = document.getElementById('tree-svg');
-  if (!canvas || !svg || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!canvas || !svg || prefersReducedMotion) return;
 
   const ctx = canvas.getContext('2d');
   const metOffice = document.getElementById('met-office');
@@ -496,6 +514,7 @@ revEls.forEach(el => obs.observe(el));
   let currentWindStrength = windiness / WIND_STRENGTH_AT_FULL;
   let targetWindStrength = currentWindStrength;
   let windTweenFrame = 0;
+  let rainVisible = false;
   const MAX_RAIN = 125;
   const rain = [];
   const splashes = [];
@@ -640,6 +659,10 @@ revEls.forEach(el => obs.observe(el));
   }
 
   function tweenWindStrength() {
+    if (!rainVisible) {
+      windTweenFrame = 0;
+      return;
+    }
     currentWindStrength += (targetWindStrength - currentWindStrength) * 0.12;
     applyWindStrength(currentWindStrength);
 
@@ -804,11 +827,14 @@ revEls.forEach(el => obs.observe(el));
   }
 
   function loop() {
-    updateRain();
-    drawRain();
+    if (rainVisible) {
+      updateRain();
+      drawRain();
+    }
     requestAnimationFrame(loop);
   }
 
+  observeSectionVisibility(metOffice, visible => { rainVisible = visible; }, 0.15);
   resizeRain();
   setWindiness(windiness);
   setSunniness(0, true);
@@ -861,18 +887,17 @@ function getPos(t) {
 
 let lapCount = 0;
 let lastLap  = 0;
+let trackVisible = false;
 
 function drawTrack() {
   ctx.clearRect(0, 0, W, H);
 
-  // track surface
   ctx.save();
   ctx.beginPath(); trackPath(ctx);
   ctx.lineWidth = 48; ctx.strokeStyle = '#111820';
   ctx.stroke();
   ctx.restore();
 
-  // track edge glow
   ctx.save();
   ctx.beginPath(); trackPath(ctx);
   ctx.lineWidth = 50;
@@ -880,7 +905,6 @@ function drawTrack() {
   ctx.stroke();
   ctx.restore();
 
-  // centre line dashes
   ctx.save();
   ctx.beginPath(); trackPath(ctx);
   ctx.lineWidth = 1;
@@ -889,7 +913,6 @@ function drawTrack() {
   ctx.stroke();
   ctx.restore();
 
-  // start/finish line
   const sf = getPos(0);
   ctx.save();
   ctx.translate(sf.x, sf.y);
@@ -910,9 +933,7 @@ function drawTrack() {
   }
   ctx.restore();
 
-  // cars + trails
   CARS.forEach(car => {
-    // trail
     car.trail.forEach((p, i) => {
       const a = i / car.trail.length;
       ctx.beginPath();
@@ -921,13 +942,11 @@ function drawTrack() {
       ctx.fill();
     });
 
-    // car body
     const pos = getPos(car.t);
     const angle = car.t * Math.PI * 2 + Math.PI/2;
     ctx.save();
     ctx.translate(pos.x, pos.y);
     ctx.rotate(angle);
-    // glow
     ctx.shadowColor = car.color;
     ctx.shadowBlur  = 18;
     ctx.fillStyle = car.color;
@@ -938,26 +957,38 @@ function drawTrack() {
   });
 }
 
+const slContainer = document.getElementById('speedLines');
+
 function animTrack() {
-  CARS.forEach(car => {
-    car.t = (car.t + car.speed) % 1;
-    const pos = getPos(car.t);
-    car.trail.push({ x: pos.x, y: pos.y });
-    if (car.trail.length > 28) car.trail.shift();
-  });
+  if (trackVisible && !prefersReducedMotion) {
+    CARS.forEach(car => {
+      car.t = (car.t + car.speed) % 1;
+      const pos = getPos(car.t);
+      car.trail.push({ x: pos.x, y: pos.y });
+      if (car.trail.length > 28) car.trail.shift();
+    });
 
-  // count laps (first car)
-  if (CARS[0].t < lastLap - 0.5) lapCount++;
-  lastLap = CARS[0].t;
+    if (CARS[0].t < lastLap - 0.5) lapCount++;
+    lastLap = CARS[0].t;
+  }
 
-  drawTrack();
+  if (trackVisible || prefersReducedMotion) drawTrack();
   requestAnimationFrame(animTrack);
 }
-animTrack();
+
+observeSectionVisibility(canvas.closest('.track-wrap') || canvas, visible => {
+  trackVisible = visible;
+  if (slContainer) slContainer.classList.toggle('is-paused', !visible);
+}, 0.15);
+
+if (prefersReducedMotion) {
+  drawTrack();
+} else {
+  animTrack();
+}
 
 // ─── SPEED LINES ──────────────────────────────────────────────────────────
-const slContainer = document.getElementById('speedLines');
-if (slContainer) {
+if (slContainer && !prefersReducedMotion) {
   for (let i = 0; i < 6; i++) {
     const line = document.createElement('div');
     line.className = 'speed-line';
@@ -1234,13 +1265,24 @@ if (slContainer) {
   }
 
   function loop() {
-    step();
-    draw();
+    if (collisionVisible && !prefersReducedMotion) {
+      step();
+      draw();
+    }
     requestAnimationFrame(loop);
   }
 
+  let collisionVisible = false;
+  observeSectionVisibility(canvas.closest('.collision-wrap') || canvas, visible => {
+    collisionVisible = visible;
+  }, 0.15);
+
   reset();
-  loop();
+  if (prefersReducedMotion) {
+    draw();
+  } else {
+    loop();
+  }
 })();
 
 // ─── CAFFEINE RECOMMENDER · LIVE FEEDBACK RE-RANK ─────────────────────────
@@ -1405,8 +1447,24 @@ if (slContainer) {
     }
   }
 
-  function loop() { step(); draw(); requestAnimationFrame(loop); }
-  loop();
+  function loop() {
+    if (caffeineVisible && !prefersReducedMotion) {
+      step();
+      draw();
+    }
+    requestAnimationFrame(loop);
+  }
+
+  let caffeineVisible = false;
+  observeSectionVisibility(canvas.closest('.caffeine-wrap') || canvas, visible => {
+    caffeineVisible = visible;
+  }, 0.15);
+
+  if (prefersReducedMotion) {
+    draw();
+  } else {
+    loop();
+  }
 })();
 
 // ─── MOBILE NAV ────────────────────────────────────────────────────────────
@@ -1441,10 +1499,46 @@ if (slContainer) {
     status.className = 'cf-status show' + (kind ? ' ' + kind : '');
   };
 
+  let recaptchaLoaded = false;
+  let recaptchaLoadPromise = null;
+
+  function loadRecaptcha() {
+    const key = form.dataset.recaptchaKey;
+    if (!key || key === 'YOUR_RECAPTCHA_SITE_KEY') return Promise.resolve();
+    if (recaptchaLoaded && window.grecaptcha) return Promise.resolve();
+    if (recaptchaLoadPromise) return recaptchaLoadPromise;
+
+    recaptchaLoadPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = `https://www.google.com/recaptcha/api.js?render=${encodeURIComponent(key)}`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        recaptchaLoaded = true;
+        resolve();
+      };
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+
+    return recaptchaLoadPromise;
+  }
+
+  form.addEventListener('focusin', () => { loadRecaptcha(); }, { once: true, capture: true });
+
+  const contactSection = document.getElementById('contact');
+  if (contactSection) {
+    observeSectionVisibility(contactSection, visible => {
+      if (visible) loadRecaptcha();
+    }, 0.2);
+  }
+
   const getRecaptchaToken = async () => {
     const key = form.dataset.recaptchaKey;
-    if (!key || key === 'YOUR_RECAPTCHA_SITE_KEY' || !window.grecaptcha) return '';
+    if (!key || key === 'YOUR_RECAPTCHA_SITE_KEY') return '';
     try {
+      await loadRecaptcha();
+      if (!window.grecaptcha) return '';
       await new Promise(r => window.grecaptcha.ready(r));
       return await window.grecaptcha.execute(key, { action: 'submit' });
     } catch (e) {
@@ -1503,7 +1597,7 @@ if (slContainer) {
   const nextBtn = section.querySelector('.carousel-next');
   const statusCurrent = section.querySelector('.carousel-status-current');
   const slideIds = slides.map(s => s.id);
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduceMotion = prefersReducedMotion;
   let index = 0;
   let resizeTimer = 0;
 
@@ -1538,6 +1632,7 @@ if (slContainer) {
     slides.forEach((slide, i) => {
       const active = i === index;
       slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+      slide.toggleAttribute('inert', !active);
     });
 
     dots.forEach((dot, i) => {
