@@ -4,6 +4,16 @@ const ring   = document.getElementById('cursor-ring');
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let mx = 0, my = 0, rx = 0, ry = 0;
 
+function resizeCanvas(canvas, ctx) {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const width = canvas.offsetWidth;
+  const height = canvas.offsetHeight;
+  canvas.width = Math.floor(width * dpr);
+  canvas.height = Math.floor(height * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { width, height };
+}
+
 function observeSectionVisibility(target, onChange, threshold = 0.15) {
   if (!target) {
     onChange(false);
@@ -19,6 +29,7 @@ function observeSectionVisibility(target, onChange, threshold = 0.15) {
 }
 
 if (cursor && ring && !prefersReducedMotion && window.matchMedia('(pointer: fine)').matches) {
+  document.body.classList.add('custom-cursor-active');
   document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
   (function animCursor() {
     cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
@@ -193,6 +204,18 @@ revEls.forEach(el => obs.observe(el));
   const layer = document.getElementById('leaves-layer');
   const metContent = document.querySelector('.met-content');
   const rainControls = document.querySelector('.rain-controls');
+  const rainControlsGhost = document.getElementById('rain-controls-ghost');
+  const rainControlsRabbit = document.getElementById('rain-controls-rabbit');
+  const rainControlsFather = document.getElementById('rain-controls-father');
+  const rainControlsMother = document.getElementById('rain-controls-mother');
+  const seasonInput = document.getElementById('season');
+  const seasonOutput = document.getElementById('season-value');
+  const seasonDial = document.getElementById('season-dial');
+  const seasonDialLabel = document.getElementById('season-dial-label');
+  const seasonPlay = document.getElementById('season-play');
+  const seasonSpeed = document.getElementById('season-speed');
+  const seasonSpeedUp = document.getElementById('season-speed-up');
+  const seasonSpeedDown = document.getElementById('season-speed-down');
   const windLeafGroups = {};
   ['left', 'center', 'right'].forEach(side => {
     const g = document.createElementNS(NS, 'g');
@@ -211,16 +234,28 @@ revEls.forEach(el => obs.observe(el));
   const GLOW_RADIUS = 18;
   const CELL_SIZE = GLOW_RADIUS;
   const SHADES = ['#1a4f24', '#226830', '#2a7a38', '#1e5c2c', '#328f44', '#174020'];
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const SEASON_COLORS = {
+    brown: [91, 58, 32],
+    green: [32, 111, 50],
+    gold: [174, 126, 38],
+  };
+  const SEASON_VEINS = {
+    brown: [72, 44, 24],
+    green: [12, 40, 18],
+    gold: [98, 70, 24],
+  };
 
   const clusters = [
-    { cx: 250, cy: 255, spreadX: 100, spreadY: 88, n: 140 },
-    { cx: 250, cy: 215, spreadX: 55, spreadY: 48, n: 45 },
-    { cx: 168, cy: 330, spreadX: 72, spreadY: 58, n: 85 },
-    { cx: 332, cy: 330, spreadX: 72, spreadY: 58, n: 85 },
-    { cx: 118, cy: 368, spreadX: 42, spreadY: 36, n: 40 },
-    { cx: 382, cy: 368, spreadX: 42, spreadY: 36, n: 40 },
-    { cx: 200, cy: 285, spreadX: 45, spreadY: 40, n: 35 },
-    { cx: 300, cy: 285, spreadX: 45, spreadY: 40, n: 35 },
+    { cx: 250, cy: 255, spreadX: 100, spreadY: 88, n: 70 },
+    { cx: 250, cy: 215, spreadX: 55, spreadY: 48, n: 23 },
+    { cx: 168, cy: 330, spreadX: 72, spreadY: 58, n: 43 },
+    { cx: 332, cy: 330, spreadX: 72, spreadY: 58, n: 43 },
+    { cx: 118, cy: 368, spreadX: 42, spreadY: 36, n: 20 },
+    { cx: 382, cy: 368, spreadX: 42, spreadY: 36, n: 20 },
+    { cx: 200, cy: 285, spreadX: 45, spreadY: 40, n: 18 },
+    { cx: 300, cy: 285, spreadX: 45, spreadY: 40, n: 18 },
   ];
 
   const leafRegistry = [];
@@ -233,6 +268,12 @@ revEls.forEach(el => obs.observe(el));
   let currentGlow = null;
   let glowTrail = [];
   let glowFrame = 0;
+  let activeSeasonMonth = null;
+  let activeSeasonAngle = null;
+  let seasonPlaybackTimer = 0;
+  let seasonPlaybackLastTime = 0;
+  let seasonPlaybackMonth = 1;
+  let leafDropTimer = 0;
 
   function leafShape(size) {
     const w = size * 0.42;
@@ -240,10 +281,236 @@ revEls.forEach(el => obs.observe(el));
     return `M 0 0 C ${-w} ${-h * 0.55} ${-w * 0.85} ${-h} 0 ${-h} C ${w * 0.85} ${-h} ${w} ${-h * 0.55} 0 0`;
   }
 
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
+
+  function lerpColor(a, b, t) {
+    return a.map((channel, index) => lerp(channel, b[index], t));
+  }
+
+  function smoothstep(edge0, edge1, value) {
+    const t = clamp((value - edge0) / (edge1 - edge0), 0, 1);
+    return t * t * (3 - 2 * t);
+  }
+
+  function colorToRgb(color, shadeShift = 0) {
+    const channels = color.map(channel => Math.round(clamp(channel + shadeShift, 0, 255)));
+    return `rgb(${channels[0]}, ${channels[1]}, ${channels[2]})`;
+  }
+
+  function shiftedColor(color, shadeShift = 0) {
+    return color.map(channel => Math.round(clamp(channel + shadeShift, 0, 255)));
+  }
+
+  function glowColor(color, saturation = 1.65, boost = 72) {
+    const average = (color[0] + color[1] + color[2]) / 3;
+    const channels = color.map(channel => Math.round(clamp(average + (channel - average) * saturation + boost, 0, 255)));
+    return `rgb(${channels[0]}, ${channels[1]}, ${channels[2]})`;
+  }
+
+  function brightenColor(color, boost = 118) {
+    return color.map(channel => Math.round(clamp(channel + boost, 0, 255)));
+  }
+
+  function rgbaColor(color, alpha) {
+    return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`;
+  }
+
+  function getSeasonState(month) {
+    const value = clamp(Number(month) || 1, 1, 13);
+    const springReturn = smoothstep(1.5, 4.8, value);
+    const autumnRemoval = smoothstep(10.15, 12.8, value);
+    const winterRemoval = value < 6 ? 1 - springReturn : autumnRemoval;
+    const density = 1 - winterRemoval * 0.8;
+
+    let color = lerpColor(SEASON_COLORS.brown, SEASON_COLORS.green, smoothstep(3.1, 5.8, value));
+    color = lerpColor(color, SEASON_COLORS.gold, smoothstep(9.6, 10.9, value));
+    color = lerpColor(color, SEASON_COLORS.brown, smoothstep(10.95, 12.85, value));
+
+    let vein = lerpColor(SEASON_VEINS.brown, SEASON_VEINS.green, smoothstep(3.1, 5.8, value));
+    vein = lerpColor(vein, SEASON_VEINS.gold, smoothstep(9.6, 10.9, value));
+    vein = lerpColor(vein, SEASON_VEINS.brown, smoothstep(10.95, 12.85, value));
+
+    return {
+      month: value,
+      density,
+      color,
+      vein,
+    };
+  }
+
+  function renderLeafSeasonState(leaf) {
+    const drop = leaf.drop;
+    const visibleOpacity = drop ? drop.life : leaf.seasonDropped ? 0 : leaf.targetFade;
+    leaf.renderedFade = visibleOpacity;
+    leaf.el.style.opacity = visibleOpacity.toFixed(3);
+    leaf.el.style.pointerEvents = visibleOpacity > 0.04 ? 'all' : 'none';
+
+    if (drop) {
+      leaf.el.setAttribute(
+        'transform',
+        `translate(${(leaf.x + drop.x).toFixed(1)},${(leaf.y + drop.y).toFixed(1)}) rotate(${(leaf.rotation + drop.spin).toFixed(1)})`
+      );
+    } else {
+      leaf.el.setAttribute('transform', leaf.baseTransform);
+    }
+  }
+
+  function scheduleLeafDropAnimation() {
+    if (!leafDropTimer && !prefersReducedMotion) {
+      leafDropTimer = setInterval(updateLeafDrops, 16);
+    }
+  }
+
+  function startLeafDrop(leaf) {
+    if (prefersReducedMotion || leaf.drop || leaf.seasonDropped) return;
+    leaf.drop = {
+      x: 0,
+      y: 0,
+      vy: 0,
+      life: Math.max(leaf.renderedFade || leaf.lastFade || 0.55, 0.45),
+      settled: 0.18 + Math.random() * 0.28,
+      drift: (Math.random() - 0.5) * 0.35,
+      spin: 0,
+      spinSpeed: (Math.random() - 0.5) * 1.9,
+    };
+    scheduleLeafDropAnimation();
+  }
+
+  function updateLeafDrops() {
+    let hasActiveDrops = false;
+
+    leafRegistry.forEach(leaf => {
+      const drop = leaf.drop;
+      if (!drop) return;
+
+      drop.settled -= 0.016;
+      if (drop.settled > 0) {
+        drop.life = Math.max(drop.life - 0.001, 0.5);
+      } else {
+        drop.vy += 0.09;
+        drop.y += drop.vy;
+        drop.x += drop.drift;
+        drop.spin += drop.spinSpeed;
+        drop.life -= 0.012;
+      }
+
+      if (drop.life <= 0.02 || drop.y > 120) {
+        leaf.drop = null;
+        leaf.seasonDropped = true;
+        leaf.dropAnchor = leaf.targetFade;
+      } else {
+        hasActiveDrops = true;
+      }
+
+      renderLeafSeasonState(leaf);
+    });
+
+    if (!hasActiveDrops && leafDropTimer) {
+      clearInterval(leafDropTimer);
+      leafDropTimer = 0;
+    }
+  }
+
+  function monthIndex(month) {
+    const normalized = normalizeSeasonMonth(month);
+    return Math.floor(normalized) - 1;
+  }
+
+  function monthNumber(month) {
+    return monthIndex(month) + 1;
+  }
+
+  function normalizeSeasonMonth(month) {
+    let value = Number(month) || 1;
+    while (value < 1) value += 12;
+    while (value >= 13) value -= 12;
+    return value;
+  }
+
+  function formatSeasonLabel(month, useFullName = false) {
+    const index = monthIndex(month);
+    return useFullName ? MONTH_NAMES[index] : MONTHS[index];
+  }
+
+  function getCurrentSeasonMonth(date = new Date()) {
+    const month = date.getMonth() + 1;
+    const daysInMonth = new Date(date.getFullYear(), month, 0).getDate();
+    return month + ((date.getDate() - 1) / daysInMonth);
+  }
+
+  function applySeason(month) {
+    const state = getSeasonState(month);
+    const label = formatSeasonLabel(state.month);
+    const fullLabel = formatSeasonLabel(state.month, true);
+    if (seasonInput) seasonInput.value = state.month.toFixed(2);
+    if (seasonOutput) seasonOutput.value = label;
+    if (seasonDialLabel) seasonDialLabel.textContent = label;
+    if (seasonDial) {
+      seasonDial.style.setProperty('--season-angle', `${(((state.month - 1) / 12) * 360).toFixed(2)}deg`);
+      seasonDial.setAttribute('aria-valuenow', String(monthNumber(state.month)));
+      seasonDial.setAttribute('aria-valuetext', fullLabel);
+    }
+    if (rainControlsGhost) {
+      const showGhost = state.month >= 10 && state.month < 11;
+      rainControlsGhost.classList.toggle('is-visible', showGhost);
+      rainControlsGhost.setAttribute('aria-hidden', showGhost ? 'false' : 'true');
+    }
+    if (rainControlsRabbit) {
+      const showRabbit = state.month >= 4 && state.month < 5;
+      rainControlsRabbit.classList.toggle('is-visible', showRabbit);
+      rainControlsRabbit.setAttribute('aria-hidden', showRabbit ? 'false' : 'true');
+    }
+    if (rainControlsFather) {
+      const showFather = state.month >= 6 && state.month < 7;
+      rainControlsFather.classList.toggle('is-visible', showFather);
+      rainControlsFather.setAttribute('aria-hidden', showFather ? 'false' : 'true');
+    }
+    if (rainControlsMother) {
+      const showMother = state.month >= 3 && state.month < 4;
+      rainControlsMother.classList.toggle('is-visible', showMother);
+      rainControlsMother.setAttribute('aria-hidden', showMother ? 'false' : 'true');
+    }
+
+    leafRegistry.forEach(leaf => {
+      const fade = smoothstep(leaf.seasonOrder - 0.18, leaf.seasonOrder + 0.04, state.density);
+      const leafColor = shiftedColor(state.color, leaf.shadeShift);
+      const veinColor = shiftedColor(state.vein, leaf.shadeShift * 0.35);
+
+      if (leaf.lastFade === undefined) {
+        leaf.dropAnchor = fade;
+      } else if (fade > leaf.lastFade + 0.01) {
+        leaf.drop = null;
+        leaf.seasonDropped = false;
+        leaf.dropAnchor = fade;
+      } else if (fade > leaf.dropAnchor) {
+        leaf.dropAnchor = fade;
+      } else if (fade < leaf.lastFade - 0.0005 && fade < 0.98) {
+        startLeafDrop(leaf);
+      }
+
+      leaf.targetFade = fade;
+      leaf.lastFade = fade;
+      leaf.body.setAttribute('fill', colorToRgb(state.color, leaf.shadeShift));
+      leaf.vein.setAttribute('stroke', colorToRgb(state.vein, leaf.shadeShift * 0.35));
+      leaf.el.style.setProperty('--leaf-hover-fill', glowColor(leafColor));
+      leaf.el.style.setProperty('--leaf-hover-vein', rgbaColor(brightenColor(veinColor), 0.86));
+      renderLeafSeasonState(leaf);
+    });
+
+    if (leafDropTimer) updateLeafDrops();
+  }
+
   function addLeaf(x, y, size, rotation, shade, clusterIndex = -1) {
     const g = document.createElementNS(NS, 'g');
     g.classList.add('leaf');
-    g.setAttribute('transform', `translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${rotation.toFixed(1)})`);
+    const baseTransform = `translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${rotation.toFixed(1)})`;
+    g.setAttribute('transform', baseTransform);
     g.dataset.x = x;
     g.dataset.y = y;
 
@@ -263,7 +530,23 @@ revEls.forEach(el => obs.observe(el));
     g.appendChild(body);
     g.appendChild(vein);
     windLeafGroups[windSideFor(x)].appendChild(g);
-    leafRegistry.push({ el: g, x, y });
+    leafRegistry.push({
+      el: g,
+      body,
+      vein,
+      x,
+      y,
+      rotation,
+      baseTransform,
+      seasonOrder: Math.random(),
+      shadeShift: Math.random() * 28 - 14,
+      targetFade: 1,
+      lastFade: undefined,
+      renderedFade: 1,
+      dropAnchor: 1,
+      seasonDropped: false,
+      drop: null,
+    });
     if (clusterIndex >= 0) clusterPoints[clusterIndex].push({ x, y });
   }
 
@@ -374,7 +657,7 @@ revEls.forEach(el => obs.observe(el));
     [228,242],[244,328],[250,255]
   ];
   branchTips.forEach(([bx, by]) => {
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 6; i++) {
       const x = bx + (Math.random() - 0.5) * 28;
       const y = by + (Math.random() - 0.5) * 24;
       addLeaf(x, y, 3.5 + Math.random() * 3, Math.random() * 360 - 180, SHADES[i % SHADES.length]);
@@ -382,6 +665,198 @@ revEls.forEach(el => obs.observe(el));
   });
   leafRegistry.forEach(indexLeaf);
   clusters.forEach((cluster, i) => createHitZone(cluster, clusterPoints[i]));
+  function seasonPointerPosition(e) {
+    const rect = seasonDial.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    return {
+      angle: (Math.atan2(dy, dx) * 180 / Math.PI + 450) % 360,
+      radius: Math.hypot(dx, dy),
+      dialRadius: rect.width / 2,
+    };
+  }
+
+  function seasonMonthFromPointer(e) {
+    const { angle } = seasonPointerPosition(e);
+    return normalizeSeasonMonth(1 + (angle / 360) * 12);
+  }
+
+  function startSeasonDrag(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const position = seasonPointerPosition(e);
+    activeSeasonAngle = position.angle;
+    activeSeasonMonth = normalizeSeasonMonth(seasonInput ? seasonInput.value : getCurrentSeasonMonth());
+
+    if (position.radius >= position.dialRadius * 0.35) {
+      activeSeasonMonth = seasonMonthFromPointer(e);
+      applySeason(activeSeasonMonth);
+    }
+  }
+
+  function updateSeasonDrag(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const position = seasonPointerPosition(e);
+
+    if (position.radius < position.dialRadius * 0.35) return;
+    if (activeSeasonMonth === null || activeSeasonAngle === null) {
+      startSeasonDrag(e);
+      return;
+    }
+
+    const deltaAngle = ((position.angle - activeSeasonAngle + 540) % 360) - 180;
+    activeSeasonAngle = position.angle;
+    if (Math.abs(deltaAngle) > 120) return;
+
+    activeSeasonMonth += deltaAngle / 30;
+    applySeason(normalizeSeasonMonth(activeSeasonMonth));
+  }
+
+  function getSeasonDebugSpeed() {
+    if (!seasonSpeed) return 0.3;
+    const speed = Number(seasonSpeed.value);
+    return Number.isFinite(speed) ? clamp(speed, -99, 99) / 100 : 0;
+  }
+
+  function normalizeSeasonSpeedInput() {
+    if (!seasonSpeed) return;
+    const value = seasonSpeed.value.trim();
+    const isNegative = value.startsWith('-');
+    const digits = value.replace(/\D/g, '').slice(0, 2);
+
+    if (!digits) {
+      seasonSpeed.value = isNegative ? '-' : '';
+      return;
+    }
+
+    seasonSpeed.value = `${isNegative ? '-' : ''}${digits}`;
+  }
+
+  function stepSeasonSpeed(delta) {
+    if (!seasonSpeed) return;
+    const raw = seasonSpeed.value.trim();
+    const current = raw === '' || raw === '-' ? 0 : Number(raw);
+    const next = clamp((Number.isFinite(current) ? current : 0) + delta, -99, 99);
+    seasonSpeed.value = String(next);
+    normalizeSeasonSpeedInput();
+  }
+
+  function bindSeasonSpeedStepHold(button, delta) {
+    let holdDelayTimer = 0;
+    let holdRepeatTimer = 0;
+
+    function clearHold() {
+      if (holdDelayTimer) clearTimeout(holdDelayTimer);
+      if (holdRepeatTimer) clearInterval(holdRepeatTimer);
+      holdDelayTimer = 0;
+      holdRepeatTimer = 0;
+    }
+
+    button.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      button.setPointerCapture(e.pointerId);
+      clearHold();
+      stepSeasonSpeed(delta);
+      holdDelayTimer = setTimeout(() => {
+        holdDelayTimer = 0;
+        holdRepeatTimer = setInterval(() => stepSeasonSpeed(delta), 80);
+      }, 400);
+    });
+    button.addEventListener('pointerup', e => {
+      if (button.hasPointerCapture(e.pointerId)) button.releasePointerCapture(e.pointerId);
+      clearHold();
+    });
+    button.addEventListener('pointercancel', clearHold);
+    button.addEventListener('pointerleave', () => {
+      if (holdDelayTimer || holdRepeatTimer) clearHold();
+    });
+  }
+
+  function stopSeasonPlayback() {
+    if (seasonPlaybackTimer) clearInterval(seasonPlaybackTimer);
+    seasonPlaybackTimer = 0;
+    seasonPlaybackLastTime = 0;
+    if (seasonPlay) {
+      seasonPlay.textContent = 'Play';
+      seasonPlay.classList.remove('is-playing');
+      seasonPlay.setAttribute('aria-pressed', 'false');
+    }
+  }
+
+  function tickSeasonPlayback() {
+    const now = performance.now();
+    if (!seasonPlaybackLastTime) seasonPlaybackLastTime = now;
+    const deltaSeconds = Math.min((now - seasonPlaybackLastTime) / 1000, 0.08);
+    seasonPlaybackLastTime = now;
+
+    seasonPlaybackMonth += getSeasonDebugSpeed() * deltaSeconds;
+    while (seasonPlaybackMonth >= 13) seasonPlaybackMonth -= 12;
+    while (seasonPlaybackMonth < 1) seasonPlaybackMonth += 12;
+    applySeason(seasonPlaybackMonth);
+  }
+
+  function startSeasonPlayback() {
+    seasonPlaybackMonth = normalizeSeasonMonth(seasonInput ? seasonInput.value : getCurrentSeasonMonth());
+    seasonPlaybackLastTime = 0;
+    if (seasonPlay) {
+      seasonPlay.textContent = 'Stop';
+      seasonPlay.classList.add('is-playing');
+      seasonPlay.setAttribute('aria-pressed', 'true');
+    }
+    if (!seasonPlaybackTimer) seasonPlaybackTimer = setInterval(tickSeasonPlayback, 33);
+  }
+
+  if (seasonDial) {
+    seasonDial.addEventListener('pointerdown', e => {
+      stopSeasonPlayback();
+      seasonDial.setPointerCapture(e.pointerId);
+      startSeasonDrag(e);
+    });
+    seasonDial.addEventListener('pointermove', e => {
+      if (seasonDial.hasPointerCapture(e.pointerId)) updateSeasonDrag(e);
+    });
+    seasonDial.addEventListener('pointerup', e => {
+      if (seasonDial.hasPointerCapture(e.pointerId)) seasonDial.releasePointerCapture(e.pointerId);
+      activeSeasonMonth = null;
+      activeSeasonAngle = null;
+    });
+    seasonDial.addEventListener('pointercancel', e => {
+      if (seasonDial.hasPointerCapture(e.pointerId)) seasonDial.releasePointerCapture(e.pointerId);
+      activeSeasonMonth = null;
+      activeSeasonAngle = null;
+    });
+    seasonDial.addEventListener('keydown', e => {
+      const current = normalizeSeasonMonth(seasonInput ? seasonInput.value : getCurrentSeasonMonth());
+      let next = current;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') next = current + 0.1;
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') next = current - 0.1;
+      else if (e.key === 'PageUp') next = current + 1;
+      else if (e.key === 'PageDown') next = current - 1;
+      else if (e.key === 'Home') next = 1;
+      else if (e.key === 'End') next = 12;
+      else return;
+
+      e.preventDefault();
+      stopSeasonPlayback();
+      applySeason(normalizeSeasonMonth(next));
+    });
+  }
+  if (seasonPlay) {
+    seasonPlay.setAttribute('aria-pressed', 'false');
+    seasonPlay.addEventListener('click', () => {
+      if (seasonPlaybackTimer) stopSeasonPlayback();
+      else startSeasonPlayback();
+    });
+  }
+  if (seasonSpeed) {
+    seasonSpeed.addEventListener('input', normalizeSeasonSpeedInput);
+  }
+  if (seasonSpeedUp) bindSeasonSpeedStepHold(seasonSpeedUp, 1);
+  if (seasonSpeedDown) bindSeasonSpeedStepHold(seasonSpeedDown, -1);
+  applySeason(getCurrentSeasonMonth());
 
   function svgPointFromEvent(e) {
     const pt = svg.createSVGPoint();
@@ -521,6 +996,7 @@ revEls.forEach(el => obs.observe(el));
   const windOutput = document.getElementById('windiness-value');
   const sunInput = document.getElementById('sunniness');
   const sunOutput = document.getElementById('sunniness-value');
+  const seasonInput = document.getElementById('season');
   let W = 0, H = 0, scale = 1, ox = 0, oy = 0;
   let raininess = rainInput ? Number(rainInput.value) : 60;
   let windiness = windInput ? Number(windInput.value) : 60;
@@ -533,10 +1009,13 @@ revEls.forEach(el => obs.observe(el));
   let targetWindStrength = currentWindStrength;
   let windTweenFrame = 0;
   let rainVisible = false;
+  let rainFrame = 0;
+  let elementRainBoxes = [];
   const MAX_RAIN = 125;
   const rain = [];
   const splashes = [];
   const drips = [];
+  const snowPiles = [];
   const canopy = [
     { cx: 250, cy: 255, rx: 118, ry: 96 },
     { cx: 168, cy: 330, rx: 88,  ry: 68 },
@@ -578,9 +1057,9 @@ revEls.forEach(el => obs.observe(el));
     return null;
   }
 
-  function getElementRainBoxes() {
+  function refreshElementRainBoxes() {
     const canvasRect = canvas.getBoundingClientRect();
-    return [metBadge, rainControls]
+    elementRainBoxes = [metBadge, rainControls]
       .filter(Boolean)
       .map(el => {
         const rect = el.getBoundingClientRect();
@@ -621,6 +1100,57 @@ revEls.forEach(el => obs.observe(el));
     }
 
     return null;
+  }
+
+  function getSnowFactor() {
+    const month = Number(seasonInput ? seasonInput.value : 6) || 6;
+    const winterArriving = smoothstep(10.9, 12.25, month);
+    const winterLeaving = 1 - smoothstep(2.0, 4.2, month);
+    return clamp(Math.max(winterArriving, winterLeaving), 0, 1);
+  }
+
+  function smoothstep(edge0, edge1, value) {
+    const t = clamp((value - edge0) / (edge1 - edge0), 0, 1);
+    return t * t * (3 - 2 * t);
+  }
+
+  function mixRgb(a, b, t, alpha) {
+    const r = Math.round(a[0] + (b[0] - a[0]) * t);
+    const g = Math.round(a[1] + (b[1] - a[1]) * t);
+    const bl = Math.round(a[2] + (b[2] - a[2]) * t);
+    return `rgba(${r},${g},${bl},${alpha})`;
+  }
+
+  function spawnSnowPile(x, y, snowFactor) {
+    if (snowFactor <= 0.12 || Math.random() > snowFactor * 0.45) return;
+    snowPiles.push({
+      x: x + (Math.random() - 0.5) * 7,
+      y: y + (Math.random() - 0.5) * 4,
+      r: 1.4 + Math.random() * 2.8,
+      life: 0.65 + snowFactor * 0.75,
+      settled: 0.9 + snowFactor * 1.4,
+      vy: 0,
+    });
+  }
+
+  function updateSnowPiles(snowFactor) {
+    const warmth = 1 - snowFactor;
+    for (let i = snowPiles.length - 1; i >= 0; i--) {
+      const pile = snowPiles[i];
+      pile.r += 0.018 * snowFactor;
+      pile.settled -= 0.01 + warmth * 0.035;
+
+      if (pile.settled > 0) {
+        pile.life -= 0.00008 + warmth * 0.0015;
+        pile.life = Math.max(pile.life, 0.55);
+      } else {
+        pile.life -= 0.0008 + warmth * 0.012;
+        pile.vy += 0.005 + warmth * 0.035;
+        pile.y += pile.vy;
+        pile.r = Math.max(0.25, pile.r - warmth * 0.006);
+      }
+      if (pile.life <= 0 || pile.y > H + 24) snowPiles.splice(i, 1);
+    }
   }
 
   function resetDrop(d) {
@@ -754,7 +1284,12 @@ revEls.forEach(el => obs.observe(el));
     sunScrollFrame = requestAnimationFrame(updateSunFromScroll);
   }
 
-  function spawnSplash(x, y, hit) {
+  function spawnSplash(x, y, hit, snowFactor) {
+    if (snowFactor > 0.35) {
+      spawnSnowPile(x, y, snowFactor);
+      if (snowFactor > 0.7) return;
+    }
+
     for (let i = 0; i < 3; i++) {
       splashes.push({
         x, y,
@@ -776,7 +1311,7 @@ revEls.forEach(el => obs.observe(el));
   }
 
   function updateRain() {
-    const elementBoxes = getElementRainBoxes();
+    const snowFactor = getSnowFactor();
     rain.forEach(d => {
       const prevX = d.x;
       const prevY = d.y;
@@ -784,14 +1319,15 @@ revEls.forEach(el => obs.observe(el));
       d.y += d.vy;
       const p = toSvgPoint(d.x, d.y);
       const hit = canopyHit(p.x, p.y);
-      const boxHit = d.vy > 0 ? boxRainHit(prevX, prevY, d, elementBoxes) : null;
+      const boxHit = d.vy > 0 ? boxRainHit(prevX, prevY, d, elementRainBoxes) : null;
       if (boxHit) {
-        spawnSplash(boxHit.x, boxHit.y, boxHit);
+        spawnSplash(boxHit.x, boxHit.y, boxHit, snowFactor);
         resetDrop(d);
       } else if (hit && d.vy > 0) {
-        spawnSplash(d.x, d.y, hit);
+        spawnSplash(d.x, d.y, hit, snowFactor);
         resetDrop(d);
       } else if (d.y > H + 60 || d.x < -80) {
+        if (snowFactor > 0.5 && d.y > H + 40) spawnSnowPile(d.x, H - 18, snowFactor * 0.6);
         resetDrop(d);
       }
     });
@@ -810,15 +1346,25 @@ revEls.forEach(el => obs.observe(el));
       d.life--;
       if (d.life <= 0) drips.splice(i, 1);
     }
+    updateSnowPiles(snowFactor);
   }
 
   function drawRain() {
+    const snowFactor = getSnowFactor();
     ctx.clearRect(0, 0, W, H);
     ctx.lineCap = 'round';
 
+    snowPiles.forEach(pile => {
+      const pileAlpha = Math.min(0.95, Math.max(0, pile.life) * (0.58 + snowFactor * 0.55));
+      ctx.fillStyle = `rgba(248,252,255,${pileAlpha})`;
+      ctx.beginPath();
+      ctx.arc(pile.x, pile.y, pile.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
     rain.forEach(d => {
-      ctx.strokeStyle = `rgba(160,220,255,${d.alpha})`;
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = mixRgb([160, 220, 255], [248, 252, 255], snowFactor, d.alpha + snowFactor * 0.2);
+      ctx.lineWidth = 1 + snowFactor * 0.4;
       ctx.beginPath();
       ctx.moveTo(d.x, d.y);
       ctx.lineTo(d.x - d.vx * 1.8, d.y - d.len);
@@ -827,7 +1373,7 @@ revEls.forEach(el => obs.observe(el));
 
     splashes.forEach(s => {
       const a = Math.max(0, s.life / s.maxLife) * 0.4;
-      ctx.strokeStyle = `rgba(170,235,255,${a})`;
+      ctx.strokeStyle = mixRgb([170, 235, 255], [248, 252, 255], snowFactor, a);
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(s.x, s.y);
@@ -837,7 +1383,7 @@ revEls.forEach(el => obs.observe(el));
 
     drips.forEach(d => {
       const a = Math.max(0, d.life / d.maxLife) * 0.42;
-      ctx.fillStyle = `rgba(160,235,255,${a})`;
+      ctx.fillStyle = mixRgb([160, 235, 255], [248, 252, 255], snowFactor, a);
       ctx.beginPath();
       ctx.arc(d.x, d.y, 1.4, 0, Math.PI * 2);
       ctx.fill();
@@ -845,15 +1391,31 @@ revEls.forEach(el => obs.observe(el));
   }
 
   function loop() {
-    if (rainVisible) {
-      updateRain();
-      drawRain();
+    if (!rainVisible) {
+      rainFrame = 0;
+      return;
     }
-    requestAnimationFrame(loop);
+    updateRain();
+    drawRain();
+    rainFrame = requestAnimationFrame(loop);
   }
 
-  observeSectionVisibility(metOffice, visible => { rainVisible = visible; }, 0.15);
+  function startRainLoop() {
+    if (!rainFrame) rainFrame = requestAnimationFrame(loop);
+  }
+
+  function stopRainLoop() {
+    if (rainFrame) cancelAnimationFrame(rainFrame);
+    rainFrame = 0;
+  }
+
+  observeSectionVisibility(metOffice, visible => {
+    rainVisible = visible;
+    if (visible) startRainLoop();
+    else stopRainLoop();
+  }, 0.15);
   resizeRain();
+  refreshElementRainBoxes();
   setWindiness(windiness);
   setSunniness(0, true);
   setRaininess(raininess);
@@ -861,10 +1423,10 @@ revEls.forEach(el => obs.observe(el));
   window.addEventListener('scroll', scheduleSunScrollUpdate, { passive: true });
   window.addEventListener('resize', () => {
     resizeRain();
+    refreshElementRainBoxes();
     setRaininess(raininess);
     scheduleSunScrollUpdate();
   });
-  loop();
 })();
 
 // ─── TRACK CANVAS ─────────────────────────────────────────────────────────
@@ -876,8 +1438,9 @@ const ctx    = canvas.getContext('2d');
 let W, H;
 
 function resize() {
-  W = canvas.width  = canvas.offsetWidth;
-  H = canvas.height = canvas.offsetHeight;
+  const size = resizeCanvas(canvas, ctx);
+  W = size.width;
+  H = size.height;
 }
 resize();
 window.addEventListener('resize', resize);
@@ -1031,8 +1594,9 @@ if (slContainer && !prefersReducedMotion) {
   let CW = 0, CH = 0;
 
   function resizeCollision() {
-    CW = canvas.width  = canvas.offsetWidth;
-    CH = canvas.height = canvas.offsetHeight;
+    const size = resizeCanvas(canvas, ctx);
+    CW = size.width;
+    CH = size.height;
   }
   resizeCollision();
   window.addEventListener('resize', resizeCollision);
@@ -1311,8 +1875,9 @@ if (slContainer && !prefersReducedMotion) {
   let CW = 0, CH = 0;
 
   function resizeCaff() {
-    CW = canvas.width  = canvas.offsetWidth;
-    CH = canvas.height = canvas.offsetHeight;
+    const size = resizeCanvas(canvas, ctx);
+    CW = size.width;
+    CH = size.height;
   }
   resizeCaff();
   window.addEventListener('resize', resizeCaff);
@@ -1631,10 +2196,10 @@ if (slContainer && !prefersReducedMotion) {
 
   function scheduleHeightUpdate() {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      updateViewportHeight();
-      window.dispatchEvent(new Event('resize'));
-    }, reduceMotion ? 0 : 480);
+    resizeTimer = setTimeout(
+      updateViewportHeight,
+      reduceMotion ? 0 : 480
+    );
   }
 
   function scrollSectionToTop() {
@@ -1697,14 +2262,22 @@ if (slContainer && !prefersReducedMotion) {
     });
   });
 
-  document.addEventListener('keydown', e => {
-    if (!section.contains(document.activeElement) && document.activeElement !== document.body) {
-      const rect = section.getBoundingClientRect();
-      const inView = rect.top < window.innerHeight * 0.85 && rect.bottom > window.innerHeight * 0.15;
-      if (!inView) return;
+  document.addEventListener('keydown', event => {
+    const target = event.target;
+
+    if (
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLTextAreaElement ||
+      target instanceof HTMLSelectElement ||
+      target?.isContentEditable
+    ) {
+      return;
     }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(index - 1); }
-    if (e.key === 'ArrowRight') { e.preventDefault(); goTo(index + 1); }
+
+    if (!section.contains(document.activeElement)) return;
+
+    if (event.key === 'ArrowLeft') { event.preventDefault(); goTo(index - 1); }
+    if (event.key === 'ArrowRight') { event.preventDefault(); goTo(index + 1); }
   });
 
   window.addEventListener('hashchange', slideFromHash);

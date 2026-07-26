@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://formspree.io https://www.google.com/recaptcha/; frame-src https://www.google.com/recaptcha/; form-action 'self' https://formspree.io; base-uri 'self'; object-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>George Pedder - ML Engineer</title>
-<meta name="description" content="Portfolio of George Pedder - BSc Computer Science (Sheffield Hallam), incoming Met Office AI placement. Building AI, automation and data tools with a focus on responsible, explainable ML.">
+<meta name="description" content="Portfolio of George Pedder - BSc Computer Science (Sheffield Hallam),  placement MLOps student at the Met Office. Building AI, automation and data tools with a focus on responsible, explainable ML.">
 <meta name="author" content="George Pedder">
 <meta name="theme-color" content="#080c10">
 <meta name="google-site-verification" content="PXgcBygTOKLgvVd3DhuC_QC_vo9mv8K2laDDUP0Y-pY" />
@@ -142,12 +142,12 @@
 <!-- ═══ MET OFFICE ════════════════════════════════════════════════════════ -->
 <section id="met-office">
   <div class="met-content reveal">
-    <div class="met-badge">Incoming Placement · July 2026 - July 2027</div>
+    <div class="met-badge">July 2026 - July 2027</div>
     <div class="section-label">// 01 · Placement</div>
     <h2 class="section-title">Met Office</h2>
     <div class="divider divider--leaf-glow"></div>
     <p class="met-desc">
-    Incoming Met Office placement focused on machine learning, automation and data-driven systems for weather and climate technology.</p>
+    Data Engineer Placement on the MLOps team at the Met Office focused on machine learning, automation and data-driven systems for weather and climate technology.</p>
     <div class="met-details">
       <div class="met-detail">Machine learning and automation in operational environments</div>
       <div class="met-detail">Data analysis and scalable workflow tooling</div>
@@ -161,29 +161,6 @@
     <div class="tree-sun" aria-hidden="true"></div>
     <div class="ground-glow"></div>
     <canvas id="tree-rain-canvas" aria-hidden="true"></canvas>
-    <div class="rain-controls" aria-label="Rain animation controls">
-      <div class="weather-control-row">
-        <label class="rain-control-label" for="raininess">
-          Raininess
-          <output id="raininess-value" for="raininess">60%</output>
-        </label>
-        <input class="rain-slider" id="raininess" type="range" min="0" max="100" step="5" value="60">
-      </div>
-      <div class="weather-control-row">
-        <label class="rain-control-label" for="windiness">
-          Windiness
-          <output id="windiness-value" for="windiness">60%</output>
-        </label>
-        <input class="wind-slider" id="windiness" type="range" min="0" max="100" step="5" value="60">
-      </div>
-      <div class="weather-control-row">
-        <label class="rain-control-label" for="sunniness">
-          Sunniness
-          <output id="sunniness-value" for="sunniness">0%</output>
-        </label>
-        <input class="sun-slider" id="sunniness" type="range" min="0" max="100" step="5" value="0">
-      </div>
-    </div>
     <svg id="tree-svg" viewBox="0 0 500 600" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="trunkGrad" x1="0%" y1="100%" x2="100%" y2="0%">
@@ -237,6 +214,83 @@
 
       <g id="leaves-layer"></g>
     </svg>
+  </div>
+  <div class="rain-controls-anchor">
+    <div class="controls-sprite rain-controls-ghost" id="rain-controls-ghost" aria-hidden="true">
+      <span class="controls-sprite-layer controls-sprite-layer--head" aria-hidden="true"></span>
+      <span class="controls-sprite-layer controls-sprite-layer--overlap" aria-hidden="true"></span>
+      <span class="controls-sprite-layer controls-sprite-layer--body" aria-hidden="true"></span>
+    </div>
+    <div class="controls-sprite rain-controls-rabbit" id="rain-controls-rabbit" aria-hidden="true">
+      <span class="controls-sprite-layer controls-sprite-layer--head" aria-hidden="true"></span>
+      <span class="controls-sprite-layer controls-sprite-layer--overlap" aria-hidden="true"></span>
+      <span class="controls-sprite-layer controls-sprite-layer--body" aria-hidden="true"></span>
+    </div>
+    <div class="controls-sprite rain-controls-father" id="rain-controls-father" aria-hidden="true">
+      <span class="controls-sprite-layer controls-sprite-layer--head" aria-hidden="true"></span>
+      <span class="controls-sprite-layer controls-sprite-layer--overlap" aria-hidden="true"></span>
+      <span class="controls-sprite-layer controls-sprite-layer--body" aria-hidden="true"></span>
+    </div>
+    <div class="controls-sprite rain-controls-mother" id="rain-controls-mother" aria-hidden="true">
+      <span class="controls-sprite-layer controls-sprite-layer--head" aria-hidden="true"></span>
+      <span class="controls-sprite-layer controls-sprite-layer--overlap" aria-hidden="true"></span>
+      <span class="controls-sprite-layer controls-sprite-layer--body" aria-hidden="true"></span>
+    </div>
+    <div class="rain-controls" aria-label="Rain animation controls">
+    <div class="weather-control-row">
+      <label class="rain-control-label" for="raininess">
+        Raininess
+        <output id="raininess-value" for="raininess">60%</output>
+      </label>
+      <input class="rain-slider" id="raininess" type="range" min="0" max="100" step="5" value="60">
+    </div>
+    <div class="weather-control-row">
+      <label class="rain-control-label" for="windiness">
+        Windiness
+        <output id="windiness-value" for="windiness">60%</output>
+      </label>
+      <input class="wind-slider" id="windiness" type="range" min="0" max="100" step="5" value="60">
+    </div>
+    <div class="weather-control-row">
+      <label class="rain-control-label" for="sunniness">
+        Sunniness
+        <output id="sunniness-value" for="sunniness">0%</output>
+      </label>
+      <input class="sun-slider" id="sunniness" type="range" min="0" max="100" step="5" value="0">
+    </div>
+    <div class="weather-control-row">
+      <label class="rain-control-label" for="season">
+        Season
+        <output id="season-value" for="season">June</output>
+      </label>
+      <input id="season" type="hidden" value="6">
+      <div class="season-dial" id="season-dial" role="slider" tabindex="0" aria-label="Season" aria-valuemin="1" aria-valuemax="12" aria-valuenow="6" aria-valuetext="June">
+        <div class="season-dial-track" aria-hidden="true">
+          <span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span>
+          <span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span>
+        </div>
+        <div class="season-dial-hand" aria-hidden="true"></div>
+        <div class="season-dial-center" id="season-dial-label" aria-hidden="true">Jun</div>
+      </div>
+      <div class="season-debug" aria-label="Season animation debug controls">
+        <button class="season-debug-play" id="season-play" type="button">Play</button>
+        <label class="season-debug-speed" for="season-speed">
+          <span>Year cycle (s)</span>
+          <div class="season-speed-field">
+            <input id="season-speed" type="text" inputmode="numeric" maxlength="3" value="30">
+            <div class="season-speed-steppers">
+              <button class="season-speed-step" id="season-speed-up" type="button" aria-label="Increase speed">
+                <span class="season-speed-arrow" aria-hidden="true"></span>
+              </button>
+              <button class="season-speed-step" id="season-speed-down" type="button" aria-label="Decrease speed">
+                <span class="season-speed-arrow season-speed-arrow--down"></span>
+              </button>
+            </div>
+          </div>
+        </label>
+      </div>
+    </div>
+    </div>
   </div>
 </section>
 
@@ -552,12 +606,10 @@
     <div class="divider reveal"></div>
     <div class="about-text reveal">
       <p>
-        <p>
-          I'm a <strong>BSc Computer Science student at Sheffield Hallam University</strong>,
-          graduating in 2028, with a focus on machine learning, AI systems, automation and data-driven
-          software. My work centres on building systems that are reliable, explainable and practical in
-          real-world settings.
-        </p>
+        I'm a <strong>BSc Computer Science student at Sheffield Hallam University</strong>,
+        graduating in 2028, with a focus on machine learning, AI systems, automation and data-driven
+        software. My work centres on building systems that are reliable, explainable and practical in
+        real-world settings.
       </p>
       <p>
         I've built ML pipelines, reinforcement learning agents, interactive dashboards and structured
@@ -588,7 +640,7 @@
       <div class="t-dot"></div>
       <div class="t-date">July 2026 - July 2027</div>
       <div class="t-title">Met Office Placement</div>
-      <div class="t-desc">Incoming Met Office placement focused on machine learning, automation and data-driven systems for weather and climate technology.</div>
+      <div class="t-desc">Data Engineeer Placement on the MLOps team at the Met Office focused on machine learning, automation and data-driven systems for weather and climate technology.</div>
     </div>
     <div class="t-item">
       <div class="t-dot"></div>
