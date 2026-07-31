@@ -511,11 +511,12 @@
     right: clamp(1rem, 5vw, 5rem);
     top: 34%;
     width: 170px;
+    z-index: 5;
     pointer-events: none;
   }
   .rain-controls {
     position: relative;
-    z-index: 4;
+    z-index: 5;
     width: 100%;
     padding: 0.8rem 0.9rem;
     border: 1px solid rgba(120,220,255,0.16);
@@ -1966,13 +1967,23 @@
       width: clamp(110px, 34vw, 180px);
     }
 
-    .rain-controls {
+    .rain-controls-anchor {
       left: 50%;
       right: auto;
-      top: 41rem;
-      bottom: auto;
-      width: min(170px, calc(100vw - 3rem));
+      top: clamp(35rem, 68vh, 40rem);
       transform: translateX(-50%);
+      width: min(170px, calc(100vw - 3rem));
+      z-index: 6;
+    }
+
+    .rain-controls {
+      left: auto;
+      right: auto;
+      top: 0;
+      bottom: auto;
+      width: 100%;
+      z-index: 6;
+      transform: none;
     }
 
     .carousel-nav {
