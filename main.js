@@ -216,6 +216,8 @@ revEls.forEach(el => obs.observe(el));
   const seasonSpeed = document.getElementById('season-speed');
   const seasonSpeedUp = document.getElementById('season-speed-up');
   const seasonSpeedDown = document.getElementById('season-speed-down');
+  const metOfficeSection = document.getElementById('met-office');
+  let seasonPlaybackPausedByViewport = false;
   const windLeafGroups = {};
   ['left', 'center', 'right'].forEach(side => {
     const g = document.createElementNS(NS, 'g');
@@ -807,6 +809,31 @@ revEls.forEach(el => obs.observe(el));
       seasonPlay.setAttribute('aria-pressed', 'true');
     }
     if (!seasonPlaybackTimer) seasonPlaybackTimer = setInterval(tickSeasonPlayback, 33);
+  }
+
+  function syncSeasonPlaybackVisibility(isOffscreen) {
+    if (isOffscreen) {
+      if (!seasonPlaybackPausedByViewport && seasonPlaybackTimer) {
+        seasonPlaybackPausedByViewport = true;
+        stopSeasonPlayback();
+      }
+      return;
+    }
+
+    if (seasonPlaybackPausedByViewport) {
+      seasonPlaybackPausedByViewport = false;
+      startSeasonPlayback();
+    }
+  }
+
+  if (metOfficeSection) {
+    const seasonPlaybackObserver = new IntersectionObserver(([entry]) => {
+      const rect = entry.boundingClientRect;
+      const isOffscreen = rect.bottom <= 0 || rect.top >= window.innerHeight;
+      syncSeasonPlaybackVisibility(isOffscreen);
+    }, { threshold: [0, 0.05] });
+
+    seasonPlaybackObserver.observe(metOfficeSection);
   }
 
   if (seasonDial) {
