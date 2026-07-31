@@ -1106,21 +1106,31 @@ revEls.forEach(el => obs.observe(el));
   }
 
   function boxRainHit(prevX, prevY, d, boxes) {
+    const dy = d.y - prevY;
+
+    // Ignore stationary or upward-moving drops.
+    if (dy <= 0) return null;
+
     for (const box of boxes) {
-      const crossesTop = prevY <= box.top && d.y >= box.top;
-      if (!crossesTop) continue;
+      const surfaceY = box.top;
+      const crossesSurface = prevY <= surfaceY && d.y >= surfaceY;
+      if (!crossesSurface) continue;
 
-      const t = (box.top - prevY) / Math.max(d.y - prevY, 0.001);
-      const xAtTop = prevX + (d.x - prevX) * t;
-      const edgePad = 5;
+      const t = (surfaceY - prevY) / dy;
+      const xAtSurface = prevX + (d.x - prevX) * t;
+      const edgePad = 1;
 
-      if (xAtTop >= box.left - edgePad && xAtTop <= box.right + edgePad) {
+      if (
+        xAtSurface >= box.left - edgePad &&
+        xAtSurface <= box.right + edgePad
+      ) {
         const center = (box.left + box.right) / 2;
         const halfWidth = Math.max((box.right - box.left) / 2, 1);
+
         return {
-          x: xAtTop,
-          y: box.top,
-          nx: clamp((xAtTop - center) / halfWidth, -1, 1),
+          x: xAtSurface,
+          y: surfaceY,
+          nx: clamp((xAtSurface - center) / halfWidth, -1, 1),
           ny: -1,
         };
       }
@@ -1422,8 +1432,14 @@ revEls.forEach(el => obs.observe(el));
       rainFrame = 0;
       return;
     }
+
+    // Elements can move because of reveal animations, transforms,
+    // layout changes, or changing seasonal controls.
+    refreshElementRainBoxes();
+
     updateRain();
     drawRain();
+
     rainFrame = requestAnimationFrame(loop);
   }
 
