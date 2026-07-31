@@ -797,6 +797,10 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
+  .season-debug-speed .mHz-lowercase,
+  .season-debug-speed .mHz-lowercase--z {
+    text-transform: lowercase !important;
+  }
   .season-speed-field {
     display: grid;
     grid-template-columns: 1fr auto;

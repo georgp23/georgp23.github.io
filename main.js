@@ -718,9 +718,12 @@ revEls.forEach(el => obs.observe(el));
   }
 
   function getSeasonDebugSpeed() {
-    if (!seasonSpeed) return 0.3;
-    const speed = Number(seasonSpeed.value);
-    return Number.isFinite(speed) ? clamp(speed, -99, 99) / 100 : 0;
+    if (!seasonSpeed) return 0;
+
+    const millihertz = Number(seasonSpeed.value);
+    if (!Number.isFinite(millihertz)) return 0;
+
+    return clamp(millihertz, -100, 100) / 1000 * 12;
   }
 
   function normalizeSeasonSpeedInput() {
@@ -2193,7 +2196,7 @@ if (slContainer && !prefersReducedMotion) {
         headers: { Accept: 'application/json' }
       });
       if (res.ok) {
-        setStatus('✔ Message sent · I will get back to you soon', 'ok');
+        setStatus('✔ Message sent · I will get back to you soon :)', 'ok');
         form.reset();
       } else {
         const data = await res.json().catch(() => ({}));
