@@ -39,6 +39,15 @@
   /* CUSTOM CURSOR - only on devices with a precise pointer (mouse / trackpad) */
   @media (pointer: fine) {
     body.custom-cursor-active { cursor: none; }
+    body.custom-cursor-active .tree-container,
+    body.custom-cursor-active #tree-svg,
+    body.custom-cursor-active #leaves-layer,
+    body.custom-cursor-active .leaf,
+    body.custom-cursor-active .leaf-hit-zone,
+    body.custom-cursor-active .tree-canopy-glow,
+    body.custom-cursor-active .tree-wind-group {
+      cursor: none !important;
+    }
     body:not(.custom-cursor-active) .cursor,
     body:not(.custom-cursor-active) .cursor-ring {
       display: none;
@@ -906,7 +915,7 @@
     stroke-linecap: round;
   }
   .leaf {
-    cursor: pointer;
+    cursor: none;
     pointer-events: all;
     transition: opacity 0.38s ease;
   }
@@ -918,7 +927,7 @@
     pointer-events: none;
   }
   .leaf-hit-zone {
-    cursor: pointer;
+    cursor: none;
     fill: transparent;
     pointer-events: all;
   }
