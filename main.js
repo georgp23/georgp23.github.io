@@ -28,6 +28,24 @@ function observeSectionVisibility(target, onChange, threshold = 0.15) {
   return () => observer.disconnect();
 }
 
+function animateWhileVisible(target, drawFrame, threshold = 0.15) {
+  let frameId = 0;
+
+  function frame(time) {
+    drawFrame(time);
+    frameId = requestAnimationFrame(frame);
+  }
+
+  return observeSectionVisibility(target, visible => {
+    if (visible && !frameId) {
+      frameId = requestAnimationFrame(frame);
+    } else if (!visible && frameId) {
+      cancelAnimationFrame(frameId);
+      frameId = 0;
+    }
+  }, threshold);
+}
+
 if (cursor && ring && !prefersReducedMotion && window.matchMedia('(pointer: fine)').matches) {
   document.body.classList.add('custom-cursor-active');
   document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
@@ -1057,12 +1075,18 @@ revEls.forEach(el => obs.observe(el));
   ];
 
   function resizeRain() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     W = canvas.offsetWidth;
     H = canvas.offsetHeight;
-    canvas.width = Math.floor(W * dpr);
-    canvas.height = Math.floor(H * dpr);
+
+    const nativeDpr = Math.min(window.devicePixelRatio || 1, 2);
+    const maxBackingPixels = 3_000_000;
+    const budgetDpr = Math.sqrt(maxBackingPixels / Math.max(W * H, 1));
+    const dpr = Math.min(nativeDpr, budgetDpr);
+
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
     scale = Math.min(W / 500, H / 600);
     ox = (W - 500 * scale) / 2;
     oy = (H - 600 * scale) / 2;
@@ -1514,7 +1538,6 @@ function getPos(t) {
 
 let lapCount = 0;
 let lastLap  = 0;
-let trackVisible = false;
 
 function drawTrack() {
   ctx.clearRect(0, 0, W, H);
@@ -1585,9 +1608,16 @@ function drawTrack() {
 }
 
 const slContainer = document.getElementById('speedLines');
+const trackTarget = canvas.closest('.track-wrap') || canvas;
 
-function animTrack() {
-  if (trackVisible && !prefersReducedMotion) {
+observeSectionVisibility(trackTarget, visible => {
+  if (slContainer) slContainer.classList.toggle('is-paused', !visible);
+}, 0.15);
+
+if (prefersReducedMotion) {
+  drawTrack();
+} else {
+  animateWhileVisible(trackTarget, () => {
     CARS.forEach(car => {
       car.t = (car.t + car.speed) % 1;
       const pos = getPos(car.t);
@@ -1597,21 +1627,9 @@ function animTrack() {
 
     if (CARS[0].t < lastLap - 0.5) lapCount++;
     lastLap = CARS[0].t;
-  }
 
-  if (trackVisible || prefersReducedMotion) drawTrack();
-  requestAnimationFrame(animTrack);
-}
-
-observeSectionVisibility(canvas.closest('.track-wrap') || canvas, visible => {
-  trackVisible = visible;
-  if (slContainer) slContainer.classList.toggle('is-paused', !visible);
-}, 0.15);
-
-if (prefersReducedMotion) {
-  drawTrack();
-} else {
-  animTrack();
+    drawTrack();
+  });
 }
 
 // ─── SPEED LINES ──────────────────────────────────────────────────────────
@@ -1892,24 +1910,17 @@ if (slContainer && !prefersReducedMotion) {
     drawSparks();
   }
 
-  function loop() {
-    if (collisionVisible && !prefersReducedMotion) {
-      step();
-      draw();
-    }
-    requestAnimationFrame(loop);
-  }
-
-  let collisionVisible = false;
-  observeSectionVisibility(canvas.closest('.collision-wrap') || canvas, visible => {
-    collisionVisible = visible;
-  }, 0.15);
-
   reset();
   if (prefersReducedMotion) {
     draw();
   } else {
-    loop();
+    animateWhileVisible(
+      canvas.closest('.collision-wrap') || canvas,
+      () => {
+        step();
+        draw();
+      }
+    );
   }
 })();
 
@@ -2076,23 +2087,16 @@ if (slContainer && !prefersReducedMotion) {
     }
   }
 
-  function loop() {
-    if (caffeineVisible && !prefersReducedMotion) {
-      step();
-      draw();
-    }
-    requestAnimationFrame(loop);
-  }
-
-  let caffeineVisible = false;
-  observeSectionVisibility(canvas.closest('.caffeine-wrap') || canvas, visible => {
-    caffeineVisible = visible;
-  }, 0.15);
-
   if (prefersReducedMotion) {
     draw();
   } else {
-    loop();
+    animateWhileVisible(
+      canvas.closest('.caffeine-wrap') || canvas,
+      () => {
+        step();
+        draw();
+      }
+    );
   }
 })();
 
